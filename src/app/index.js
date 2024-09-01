@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from 'react';
 import { Text, TextInput, View, TouchableOpacity, StyleSheet, Image } from "react-native";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const logo = require('../../assets/logo.png')
 
@@ -10,6 +11,8 @@ export default function LoginScreen() {
       <Image source={logo} style={styles.logo}/>
       <Text style={styles.title}>Entrar</Text>
       
+      <View style={styles.inputContainer}>
+        <Icon name="envelope" size={20} color="#ccc" style={styles.icon}/>
       <TextInput
         style={styles.input}
         placeholder="Email" 
@@ -17,7 +20,10 @@ export default function LoginScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="lock" size={20} color="#ccc" style={styles.icon}/>
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -25,6 +31,7 @@ export default function LoginScreen() {
         secureTextEntry
         autoCapitalize="none"
       />
+      </View>
       
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Entrar</Text>
@@ -56,15 +63,25 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 40,
   },
-  input: {
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     width: "90%",
     height: 50,
     backgroundColor: "#FFFFFF",
     borderRadius: 14,
-    paddingHorizontal: 10,
     marginBottom: 20,
-    color: "#E4DFDF",
+    paddingHorizontal: 10,
+    height: 50,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
+    height: '100%', // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",
