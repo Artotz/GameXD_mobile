@@ -1,74 +1,11 @@
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from 'react';
-import { Text, TextInput, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 
-export default function LoginScreen() {
+export default function RootLayout() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Entrar</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Email" 
-        placeholderTextColor="#ccc"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        placeholderTextColor="#ccc"
-        secureTextEntry
-        autoCapitalize="none"
-      />
-      
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
-      
-      <StatusBar style="auto" />
-    </View>
+    <Stack>
+      <Stack.Screen name="index"></Stack.Screen>
+    </Stack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1C1A2B",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    width: "90%",
-    textAlign: "left",
-    fontSize: 32,
-    color: "#fff",
-    marginBottom: 40,
-  },
-  input: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    color: "#E4DFDF",
-    fontSize: 16,
-  },
-  button: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#AB72CE",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 30,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});
