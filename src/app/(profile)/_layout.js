@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 
-export default function SignUpLayout() {
+export default function ProfileLayout() {
   return (
     <Stack
       screenOptions={{
@@ -10,7 +10,7 @@ export default function SignUpLayout() {
       }}
     >
       <Stack.Screen
-        name="signUp"
+        name="profile"
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack>

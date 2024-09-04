@@ -1,45 +1,58 @@
-import { StatusBar } from "expo-status-bar";
-import React from 'react';
-import { Text, TextInput, View, TouchableOpacity, StyleSheet, Image } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Link } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const logo = require('../../assets/logo.png')
+const logo = require("../../assets/logo.png");
 
 export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo}/>
+      <Image source={logo} style={styles.logo} />
       <Text style={styles.title}>Entrar</Text>
-      
+
       <View style={styles.inputContainer}>
-        <Icon name="envelope" size={20} color="#ccc" style={styles.icon}/>
-      <TextInput
-        style={styles.input}
-        placeholder="Email" 
-        placeholderTextColor="#ccc"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <Icon name="envelope" size={20} color="#ccc" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#ccc"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="lock" size={20} color="#ccc" style={styles.icon}/>
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        placeholderTextColor="#ccc"
-        secureTextEntry
-        autoCapitalize="none"
-      />
+        <Icon name="lock" size={20} color="#ccc" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#ccc"
+          secureTextEntry
+          autoCapitalize="none"
+        />
       </View>
-      
-      <TouchableOpacity style={styles.button}>
-        <Link href="/homescreen">
-        HomeScreen
-        </Link>
-      </TouchableOpacity>
-      
+
+      <Link href="home" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
+      </Link>
+
+      <Link href="signUp" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Cadastrar-se</Text>
+        </TouchableOpacity>
+      </Link>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -84,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
-    height: '100%', // Garante que o TextInput preencha toda a altura da View
+    height: "100%", // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",
