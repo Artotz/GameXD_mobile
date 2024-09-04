@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React from 'react';
 import { Text, TextInput, View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Link } from "expo-router";
 
 const logo = require('../../assets/logo.png')
 
@@ -34,7 +35,9 @@ export default function LoginScreen() {
       </View>
       
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Link href="/homescreen">
+        HomeScreen
+        </Link>
       </TouchableOpacity>
       
       <StatusBar style="auto" />
