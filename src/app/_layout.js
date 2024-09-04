@@ -4,8 +4,12 @@ import { Text, View } from "react-native";
 
 export default function HomeLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="homeScreen"></Stack.Screen>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="index"></Stack.Screen>
     </Stack>
   );
 }
