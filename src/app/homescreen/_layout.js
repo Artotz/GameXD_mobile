@@ -2,10 +2,10 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 
-export default function HomeLayout() {
+export default function RootLayout() {
   return (
     <Stack>
-      <Stack.Screen name="homeScreen"></Stack.Screen>
+      <Stack.Screen name="index"></Stack.Screen>
     </Stack>
   );
 }
