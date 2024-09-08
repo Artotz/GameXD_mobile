@@ -9,7 +9,7 @@ export default function HomeLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="index"></Stack.Screen>
+      <Stack.Screen name="home" options={{ headerShown: false }}></Stack.Screen>
     </Stack>
   );
 }
