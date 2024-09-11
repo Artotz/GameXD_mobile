@@ -47,7 +47,7 @@ export default function LoginScreen() {
           trackColor={{ false: "#767577", true: "#AB72CE" }}
           thumbColor={rememberAccount ? "#fff" : "#f4f3f4"}
         />
-        <Link href="forgotPassword">
+        <Link href="forgot">
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
         </Link>
       </View>
