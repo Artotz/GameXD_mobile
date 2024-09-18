@@ -50,7 +50,7 @@ export default function ReviewComment() {
           <View style={styles.modalContent}>
             {/* Botão X para fechar o modal */}
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Icon name="close" size={16} color="#AB72CE" />
+              <Icon name="close" size={16} color="#B58CCD" />
             </TouchableOpacity>
 
             <TextInput
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   button: {
     width: "15%",
     height: 40,
-    backgroundColor: "#AB72CE",
+    backgroundColor: "#B58CCD",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   modalButton: {
     width: "15%", 
     height: 40,
-    backgroundColor: "#AB72CE",
+    backgroundColor: "#B58CCD",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
