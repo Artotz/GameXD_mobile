@@ -1,15 +1,21 @@
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Text, TextInput, View, TouchableOpacity, StyleSheet, Image, Switch } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { useState } from 'react';
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Switch,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useState } from "react";
 
-const logo = require('../../assets/logo.png')
+const logo = require("../../assets/logo.png");
 
 export default function LoginScreen() {
-
   const [rememberAccount, setRememberAccount] = useState(false);
-
 
   return (
     <View style={styles.container}>
@@ -39,9 +45,7 @@ export default function LoginScreen() {
       </View>
 
       <View style={styles.rememberContainer}>
-        <Text style={styles.rememberText}>
-          Lembrar Conta?
-        </Text>
+        <Text style={styles.rememberText}>Lembrar Conta?</Text>
         <Switch
           value={rememberAccount}
           onValueChange={setRememberAccount}
@@ -52,7 +56,6 @@ export default function LoginScreen() {
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
         </Link>
       </View>
-      
 
       <Link href="home" asChild>
         <TouchableOpacity style={styles.button}>
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
-    height: '100%', // Garante que o TextInput preencha toda a altura da View
+    height: "100%", // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   signUpContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 20,
   },
   signUpText: {
@@ -140,21 +143,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   rememberContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '90%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "90%",
     marginBottom: 5,
   },
   rememberText: {
-    color: '#ccc',
+    color: "#ccc",
     fontSize: 16,
-    
-  },  
-  forgotPasswordText: {
-    color: '#AB72CE',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
-
+  forgotPasswordText: {
+    color: "#AB72CE",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
