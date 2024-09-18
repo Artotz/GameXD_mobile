@@ -41,6 +41,12 @@ export default function Home() {
         </TouchableOpacity>
       </Link>
 
+      <Link href="gameInfo" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Game Info</Text>
+        </TouchableOpacity>
+      </Link>
+
       <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
       <View style={styles.underline} />
       <FlatList
