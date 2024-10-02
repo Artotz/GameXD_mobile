@@ -1,6 +1,6 @@
 import { Link, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TextInput,
@@ -15,6 +15,34 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function GameInfo() {
   const { id } = useLocalSearchParams();
+  const [gameInfo, setGameInfo] = useState({});
+  const [gameReviews, setGameReviews] = useState([]);
+
+  const fetchGameInfo = async () => {
+    try {
+      const response = await fetch(`http://192.168.0.6:3000/games/${id}`);
+      const result = await response.json();
+      console.log("game", result);
+      setGameInfo(result);
+    } catch (error) {
+      console.error("Erro ao carregar os detalhes do jogo:", error);
+    }
+  };
+
+  const fetchGameReviews = async () => {
+    try {
+      const response = await fetch(`http://192.168.0.6:3000/reviews/${id}`);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      console.log("All Reviews", result);
+      setGameReviews(result);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error);
+    }
+  };
 
   // Dados de exemplo para cada seção
   const recentGames = [
@@ -35,8 +63,14 @@ export default function GameInfo() {
     },
   ];
 
+  useEffect(() => {
+    fetchGameInfo();
+    fetchGameReviews();
+  }, [id]);
+
   // item.profiles.avatar_url, item.profiles.username, item.review_body
-  const renderGameItem = ({ item }) => (
+
+  const renderReviewItem = ({ item }) => (
     <View
       style={{
         display: "flex",
@@ -51,7 +85,7 @@ export default function GameInfo() {
     >
       <Image
         style={styles.profilePhoto}
-        source={{ uri: "../assets/ricardo.png" }}
+        source={{ uri: item.profiles.avatar_url }}
       />
       <View
         style={{
@@ -60,11 +94,11 @@ export default function GameInfo() {
           overflow: "hidden",
           justifyContent: "center",
           alignItems: "center",
-          paddingRight: 24,
+          // paddingRight: 24,
         }}
       >
-        <Text style={styles.reviewUsername}>{item.username}</Text>
-        <Text style={styles.reviewBody}>{item.reviewBody}</Text>
+        <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+        <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
   );
@@ -78,31 +112,24 @@ export default function GameInfo() {
             width: 300, //mudar aqui
             height: 300,
           }}
-          // source={{ uri: src }}
-          source={{ uri: "../assets/animalCrossing.jpg" }}
+          source={{ uri: gameInfo.header_image }}
+          // source={{ uri: "../assets/animalCrossing.jpg" }}
         />
 
         <Text style={styles.gameTitle}>{id}</Text>
-        <Text style={styles.sectionTitle}>Animal Crossing: New Horizons</Text>
-        <Text style={styles.gameBrand}>Nintendo (2020){"\n"}</Text>
-        <View style={styles.underline} />
-        <Text style={styles.gameTitle}>
-          Escape para uma ilha deserta e crie o seu próprio paraíso enquanto
-          explora, cria e customiza em Animal Crossing: New Horizons. A sua ilha
-          traz uma variedade incrível de recursos naturais que podem ser usados
-          para criar de tudo, desde objetos para o seu conforto a ferramentas.
-          Você pode caçar insetos ao amanhecer, decorar o seu paraíso durante o
-          dia ou desfrutar do pôr do sol na praia enquanto pesca no oceano. A
-          hora do dia e as estações do ano correspondem à realidade, então
-          aproveite a oportunidade de conferir a sua ilha a cada dia para
-          encontrar novas surpresas durante o ano todo.
+        <Text style={styles.sectionTitle}>{gameInfo.name}</Text>
+        <Text style={styles.gameBrand}>
+          {gameInfo.publishers}
+          {"\n"}
         </Text>
+        <View style={styles.underline} />
+        <Text style={styles.gameTitle}>{gameInfo.short_description}</Text>
         <Text style={styles.gameAnalises}>Análises{"\n"}</Text>
         <View style={styles.underline} />
 
         <FlatList
-          data={recentGames}
-          renderItem={renderGameItem}
+          data={gameReviews}
+          renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           style={{ display: "flex", width: "100%", gap: 12 }}

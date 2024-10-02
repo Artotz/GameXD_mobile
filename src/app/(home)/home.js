@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -9,17 +9,18 @@ import {
   StyleSheet,
   Image,
   FlatList,
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import GameCard from "../../components/GameCard";
 
 export default function Home() {
-
   const [recentGames, setRecentGames] = useState([]);
 
   const fetchRecentGames = async () => {
     try {
       const response = await fetch(
-        `http://192.168.8.172:3000/games/recent-games`
+        `http://192.168.0.6:3000/games/recent-games`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -32,10 +33,6 @@ export default function Home() {
       setRecentGames(result);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
-      setRecentGames([
-        { id: "1", name: "erro" },
-        { id: "2", name: "erro" },
-      ]);
     }
   };
 
@@ -45,80 +42,157 @@ export default function Home() {
 
   // Dados de exemplo para cada seção
   // const recentGames = [
-  //   { id: "1", title: "Game 1" },
+  //   { id: "1", title: "Game Long Name 1" },
   //   { id: "2", title: "Game 2" },
+  //   { id: "3", title: "Game 3" },
+  //   { id: "4", title: "Game 4" },
+  //   { id: "5", title: "Game 5" },
   // ];
-  const friendsGames = [
-    { id: "3", title: "Game 3" },
-    { id: "4", title: "Game 4" },
-  ];
-  const featuredGames = [
-    { id: "5", title: "Game 5" },
-    { id: "6", title: "Game 6" },
-  ];
 
   const renderGameItem = ({ item }) => (
-    <View style={styles.gameItem}>
-      <Text style={styles.gameTitle}>{item.name}</Text>
-      <Image src={item.header_image}></Image>
+    <View style={{ marginHorizontal: 4 }}>
+      <GameCard
+        title={item.name}
+        src={item.header_image}
+        onPress={() => router.push(`../game/${item.id}`)}
+      />
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <Link href="profile" asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Perfil</Text>
-        </TouchableOpacity>
-      </Link>
-      <Link href="gameInfo" asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Game Info</Text>
-        </TouchableOpacity>
-      </Link>
-      <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
-      <View style={styles.underline} />
-      <FlatList
-        data={recentGames}
-        renderItem={renderGameItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
+      <View style={styles.container}>
+        {/* <Link href="profile" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Perfil</Text>
+          </TouchableOpacity>
+        </Link>
 
-      <Text style={styles.sectionTitle}>Adicionados por Amigos</Text>
-      <View style={styles.underline} />
-      <FlatList
-        data={friendsGames}
-        renderItem={renderGameItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+        <Link href="gameInfo" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Game Info</Text>
+          </TouchableOpacity>
+        </Link> */}
 
-      <Text style={styles.sectionTitle}>Destaques da Semana</Text>
-      <View style={styles.underline} />
-      <FlatList
-        data={featuredGames}
-        renderItem={renderGameItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+        <Text style={styles.title}>Bem vindo!</Text>
+
+        <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
+        <View style={styles.underline} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: "100%" }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-
-    flex: 1,
     display: "flex",
-    flexBasis: "fit-content",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    paddingVertical: 30,
+    marginBottom: 60,
+    gap: 8,
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 1,
+    color: "white",
+    alignItems: "flex-start",
+    marginTop: 20,
   },
   sectionTitle: {
     fontSize: 20,
@@ -128,28 +202,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginTop: 20,
   },
-  gameItem: {
-
-
-    flex: 1,
-    width: 150,
-    height: 150,
-    marginRight: 15,
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#D8BFD8",
-    borderRadius: 8,
-    alignItems: "center",
-    alignItems: "center",
-  },
-  gameTitle: {
-    fontSize: 16,
-    color: "white",
-  },
-
   underline: {
-    flex: 1,
-    height: 10,
+    height: 1,
     width: "90%",
     backgroundColor: "white",
   },
