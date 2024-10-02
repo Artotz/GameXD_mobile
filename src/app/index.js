@@ -44,6 +44,7 @@ export default function LoginScreen() {
     }
   };
 
+
   return (
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
@@ -149,6 +150,7 @@ const styles = StyleSheet.create({
     color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
     height: "100%", // Garante que o TextInput preencha toda a altura da View
+    height: '100%', // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",
@@ -193,4 +195,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
 });
