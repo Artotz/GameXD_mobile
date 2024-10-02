@@ -13,6 +13,39 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function Home() {
+
+  // Dados de exemplo para cada seção
+
+  const [recentGames, setRecentGames] = useState([]);
+
+  const fetchRecentGames = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.8.172:3000/games/recent-games`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+
+      //printing the result
+      console.log("Games", result);
+
+      setRecentGames(result);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error);
+      setRecentGames([
+        { id: "1", name: "erro" },
+        { id: "2", name: "erro" },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentGames();
+  }, []);
+
+  // Dados de exemplo para cada seção
   const [recentGames, setRecentGames] = useState([]);
 
   const fetchRecentGames = async () => {
@@ -70,13 +103,11 @@ export default function Home() {
           <Text style={styles.buttonText}>Perfil</Text>
         </TouchableOpacity>
       </Link>
-
       <Link href="gameInfo" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Game Info</Text>
         </TouchableOpacity>
       </Link>
-
       <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
       <View style={styles.underline} />
       <FlatList
@@ -112,6 +143,8 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
+
+    flex: 1,
     display: "flex",
     flexBasis: "fit-content",
     backgroundColor: "#1C1A2B",
@@ -128,6 +161,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   gameItem: {
+
+
     flex: 1,
     width: 150,
     height: 150,

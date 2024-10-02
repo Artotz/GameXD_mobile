@@ -8,13 +8,43 @@ import {
   StyleSheet,
   Image,
   Switch,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
+import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
+import { useRouter } from "expo-router";
+
 
 const logo = require("../../assets/logo.png");
 
 export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rememberAccount, setRememberAccount] = useState(false);
+  const router = useRouter(); // Para navegar entre telas
+
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos.");
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert("Erro", error.message);
+    } else {
+      router.replace("/home");
+    }
+  };
+
   const [rememberAccount, setRememberAccount] = useState(false);
 
   return (
@@ -30,6 +60,8 @@ export default function LoginScreen() {
           placeholderTextColor="#ccc"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
 
@@ -41,6 +73,8 @@ export default function LoginScreen() {
           placeholderTextColor="#ccc"
           secureTextEntry
           autoCapitalize="none"
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
 
@@ -57,12 +91,21 @@ export default function LoginScreen() {
         </Link>
       </View>
 
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSignIn}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Entrando..." : "Entrar"}
+        </Text>
+      </TouchableOpacity>
+
       <Link href="home" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
       </Link>
-
       <View style={styles.signUpContainer}>
         <Text style={styles.signUpText}>Não tem uma conta? </Text>
         <Link href="signUp">
@@ -114,6 +157,7 @@ const styles = StyleSheet.create({
     color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
     height: "100%", // Garante que o TextInput preencha toda a altura da View
+    height: '100%', // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",
