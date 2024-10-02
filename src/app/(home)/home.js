@@ -14,38 +14,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function Home() {
 
-  // Dados de exemplo para cada seção
-
-  const [recentGames, setRecentGames] = useState([]);
-
-  const fetchRecentGames = async () => {
-    try {
-      const response = await fetch(
-        `http://192.168.8.172:3000/games/recent-games`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
-
-      //printing the result
-      console.log("Games", result);
-
-      setRecentGames(result);
-    } catch (error) {
-      console.error("Erro ao recuperar dados:", error);
-      setRecentGames([
-        { id: "1", name: "erro" },
-        { id: "2", name: "erro" },
-      ]);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecentGames();
-  }, []);
-
-  // Dados de exemplo para cada seção
   const [recentGames, setRecentGames] = useState([]);
 
   const fetchRecentGames = async () => {

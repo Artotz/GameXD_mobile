@@ -45,7 +45,6 @@ export default function LoginScreen() {
     }
   };
 
-  const [rememberAccount, setRememberAccount] = useState(false);
 
   return (
     <View style={styles.container}>
