@@ -43,6 +43,7 @@ export default function LoginScreen() {
       router.replace("/home");
     }
   };
+  
 
 
   return (
@@ -98,7 +99,6 @@ export default function LoginScreen() {
           {loading ? "Entrando..." : "Entrar"}
         </Text>
       </TouchableOpacity>
-
       <View style={styles.signUpContainer}>
         <Text style={styles.signUpText}>Não tem uma conta? </Text>
         <Link href="signUp">
@@ -195,5 +195,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
 });
