@@ -15,7 +15,6 @@ import { useState } from "react";
 import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
 import { useRouter } from "expo-router";
 
-
 const logo = require("../../assets/logo.png");
 
 export default function LoginScreen() {
@@ -44,7 +43,8 @@ export default function LoginScreen() {
       router.replace("/home");
     }
   };
-
+  
+  const [rememberAccount, setRememberAccount] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -99,6 +99,7 @@ export default function LoginScreen() {
           {loading ? "Entrando..." : "Entrar"}
         </Text>
       </TouchableOpacity>
+
 
       <Link href="home" asChild>
         <TouchableOpacity style={styles.button}>
