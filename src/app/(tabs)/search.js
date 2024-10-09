@@ -10,11 +10,38 @@ import {
   Image,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 
 export default function Search() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [delaySearchQuery, setDelaySearchQuery] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDelaySearchQuery(searchQuery);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (delaySearchQuery) {
+      // deletar
+      setDidFetchFail(false);
+    }
+    // deletar
+    else setDidFetchFail(true);
+  }, [delaySearchQuery]);
+
   // Dados de exemplo para cada seção
   const recentGames = [
     { id: "1", title: "Game Long Name 1" },
@@ -56,7 +83,11 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Busca</Text>
+      <Text style={styles.title}>
+        Busca
+        {/* {"\n"}
+        {searchQuery} */}
+      </Text>
       <TextInput
         style={{
           display: "flex",
@@ -70,29 +101,54 @@ export default function Search() {
           borderRadius: 999,
           outline: "none",
         }}
+        value={searchQuery}
+        onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
       <View style={styles.underline} />
-
-      <ScrollView
-        style={{
-          width: "100%",
-          height: "full",
-          backgroundColor: "#1C1A2B",
-          marginBottom: 60,
-        }}
-        contentContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <FlatList
-          data={recentGames}
-          renderItem={renderGameItem}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          showsVerticalScrollIndicator={false}
-        />
-      </ScrollView>
+      {didFetchFail ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        </View>
+      ) : isLoading ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <ActivityIndicator></ActivityIndicator>
+        </View>
+      ) : (
+        <ScrollView
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#1C1A2B",
+            marginBottom: 60,
+          }}
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FlatList
+            data={recentGames}
+            renderItem={renderGameItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            showsVerticalScrollIndicator={false}
+          />
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -103,7 +159,7 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingTop: 30,
     gap: 8,
   },
@@ -112,7 +168,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 1,
     color: "white",
-    alignItems: "flex-start",
+    alignItems: "center",
+    textAlign: "center",
     marginTop: 20,
   },
   sectionTitle: {

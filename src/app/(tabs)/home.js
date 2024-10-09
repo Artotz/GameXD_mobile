@@ -10,18 +10,19 @@ import {
   Image,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 
 export default function Home() {
   const [recentGames, setRecentGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
 
   const fetchRecentGames = async () => {
     try {
-      const response = await fetch(
-        `http://192.168.0.6:3000/games/recent-games`
-      );
+      const response = await fetch(`http://127.0.0.1:3000/games/recent-games`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -31,23 +32,16 @@ export default function Home() {
       console.log("Games", result);
 
       setRecentGames(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+      setDidFetchFail(true);
     }
   };
 
   useEffect(() => {
     fetchRecentGames();
   }, []);
-
-  // Dados de exemplo para cada seção
-  // const recentGames = [
-  //   { id: "1", title: "Game Long Name 1" },
-  //   { id: "2", title: "Game 2" },
-  //   { id: "3", title: "Game 3" },
-  //   { id: "4", title: "Game 4" },
-  //   { id: "5", title: "Game 5" },
-  // ];
 
   const renderGameItem = ({ item }) => (
     <View style={{ marginHorizontal: 4 }}>
@@ -59,21 +53,38 @@ export default function Home() {
     </View>
   );
 
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
+    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        {/* <Link href="profile" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Perfil</Text>
-          </TouchableOpacity>
-        </Link>
-
-        <Link href="gameInfo" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Game Info</Text>
-          </TouchableOpacity>
-        </Link> */}
-
         <Text style={styles.title}>Bem vindo!</Text>
 
         <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
@@ -181,7 +192,7 @@ const styles = StyleSheet.create({
     display: "flex",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,

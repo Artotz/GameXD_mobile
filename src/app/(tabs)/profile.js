@@ -10,8 +10,9 @@ import {
   Image,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
 
@@ -23,9 +24,12 @@ export default function Profile() {
   const [gamesTotal, setGamesTotal] = useState(0);
   const [reviewsTotal, setReviewsTotal] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://192.168.0.6:3000/profiles`);
+      const response = await fetch(`http://127.0.0.1:3000/profiles`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -34,15 +38,17 @@ export default function Profile() {
       setUser(result[4]);
       fetchFavorites(result[4]);
       fetchUserReviews(result[4]);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
+      setDidFetchFail(true);
     }
   };
 
   const fetchFavorites = async (data) => {
     try {
       const response = await fetch(
-        `http://192.168.0.6:3000/favorites/${data.id}`
+        `http://127.0.0.1:3000/favorites/${data.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -59,7 +65,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://192.168.0.6:3000/reviews/user-reviews/${data.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${data.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -76,43 +82,6 @@ export default function Profile() {
   useEffect(() => {
     fetchUser();
   }, []);
-
-  // Dados de exemplo para cada seção
-  // const [favoriteGames, setFavoriteGames] = useState([]);
-  // const [recentReviews, setRecentReviews] = useState([]);
-
-  // [
-  //   { id: "1", title: "Game Long Name 1" },
-  //   { id: "2", title: "Game 2" },
-  //   { id: "3", title: "Game 3" },
-  //   { id: "4", title: "Game 4" },
-  //   { id: "5", title: "Game 5" },
-  // ];
-
-  // Dados de exemplo para cada seção
-  // const recentReviews = [
-  //   {
-  //     id: "1",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "1",
-  //     gameTitle: "Game Long Name 1",
-  //   },
-  //   {
-  //     id: "2",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "2",
-  //     gameTitle: "Game 2",
-  //   },
-  //   {
-  //     id: "3",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "3",
-  //     gameTitle: "Game 3",
-  //   },
-  // ];
 
   const renderGameItem = ({ item }) => (
     <View style={{ marginHorizontal: 4 }}>
@@ -164,8 +133,37 @@ export default function Profile() {
     </View>
   );
 
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
+    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
@@ -224,7 +222,7 @@ const styles = StyleSheet.create({
     display: "flex",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
