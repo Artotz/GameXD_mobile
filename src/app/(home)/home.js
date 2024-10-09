@@ -49,6 +49,7 @@ export default function Home() {
     fetchRecentGames();
   }, []);
 
+
   // Dados de exemplo para cada seção
   // const recentGames = [
   //   { id: "1", title: "Game 1" },
@@ -79,15 +80,11 @@ export default function Home() {
           <Text style={styles.buttonText}>Perfil</Text>
         </TouchableOpacity>
       </Link>
-
-
       <Link href="gameInfo" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Game Info</Text>
         </TouchableOpacity>
       </Link>
-
-
       <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
       <View style={styles.underline} />
       <FlatList
@@ -125,10 +122,8 @@ const styles = StyleSheet.create({
   container: {
 
     flex: 1,
-
     display: "flex",
     flexBasis: "fit-content",
-
     backgroundColor: "#1C1A2B",
     alignItems: "center",
     justifyContent: "center",
@@ -146,7 +141,6 @@ const styles = StyleSheet.create({
 
 
     flex: 1,
-
     width: 150,
     height: 150,
     marginRight: 15,
@@ -163,14 +157,9 @@ const styles = StyleSheet.create({
   },
 
   underline: {
-
-    width: "90%",
-    height: 1,
-
     flex: 1,
     height: 10,
     width: "90%",
-
     backgroundColor: "white",
   },
   button: {

@@ -14,6 +14,10 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
 import { useRouter } from "expo-router";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c38549cb87ad75d94e0191fa43a4b16d6f5219d
 
 const logo = require("../../assets/logo.png");
 
@@ -45,6 +49,10 @@ export default function LoginScreen() {
   };
   
 
+<<<<<<< HEAD
+=======
+  const [rememberAccount, setRememberAccount] = useState(false);
+>>>>>>> 2c38549cb87ad75d94e0191fa43a4b16d6f5219d
 
   return (
     <View style={styles.container}>
@@ -99,6 +107,15 @@ export default function LoginScreen() {
           {loading ? "Entrando..." : "Entrar"}
         </Text>
       </TouchableOpacity>
+<<<<<<< HEAD
+=======
+
+      <Link href="home" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
+      </Link>
+>>>>>>> 2c38549cb87ad75d94e0191fa43a4b16d6f5219d
       <View style={styles.signUpContainer}>
         <Text style={styles.signUpText}>Não tem uma conta? </Text>
         <Link href="signUp">
