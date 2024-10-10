@@ -9,7 +9,8 @@ export default function HomeLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="index"></Stack.Screen>
+      <Stack.Screen name="(tabs)/profile" />
+      <Stack.Screen name="login"></Stack.Screen>
     </Stack>
   );
 }
