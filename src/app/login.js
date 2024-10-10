@@ -44,7 +44,6 @@ export default function LoginScreen() {
     }
   };
   
-  const [rememberAccount, setRememberAccount] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -100,12 +99,6 @@ export default function LoginScreen() {
         </Text>
       </TouchableOpacity>
 
-
-      <Link href="home" asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
-      </Link>
       <View style={styles.signUpContainer}>
         <Text style={styles.signUpText}>Não tem uma conta? </Text>
         <Link href="signUp">

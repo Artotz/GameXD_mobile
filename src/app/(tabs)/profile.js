@@ -11,6 +11,7 @@ import {
   FlatList,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
@@ -76,6 +77,27 @@ export default function Profile() {
       console.log("user review", result);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+    }
+  };
+  const handleDeleteAccount = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .delete()
+        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
+  
+      if (error) {
+        console.error("Erro ao apagar conta:", error);
+        Alert.alert("Erro ao apagar conta", error.message);
+      } else {
+        // Se deletar o perfil com sucesso, desloga o usuário e redireciona para a tela de login
+        await supabase.auth.signOut();
+        Alert.alert("Conta apagada com sucesso!");
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Erro ao tentar apagar conta:", error);
+      Alert.alert("Erro ao tentar apagar conta", error.message);
     }
   };
 
@@ -212,7 +234,11 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+        <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+      </TouchableOpacity>
       </View>
+    
     </ScrollView>
   );
 }
@@ -313,4 +339,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
+  deleteButton: {
+    width: "90%",
+    height: 50,
+    backgroundColor: "#ff4d4f",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center", 
+    marginTop: 30,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight:"bold",
+  }
+
 });
