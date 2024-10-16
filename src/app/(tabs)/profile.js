@@ -37,9 +37,9 @@ export default function Profile() {
       }
       const result = await response.json();
       console.log("users", result);
-      setUser(result[4]);
-      fetchFavorites(result[4]);
-      fetchUserReviews(result[4]);
+      setUser(result[2]);
+      fetchFavorites(result[2]);
+      fetchUserReviews(result[2]);
 
       setIsLoading(false);
     } catch (error) {
@@ -141,7 +141,7 @@ export default function Profile() {
         src={item.Games.header_image}
         width={50}
         height={50}
-        onPress={() => router.push(`../game/${item.Games.game_id}`)}
+        onPress={() => router.push(`../game/${item.game_id}`)}
       />
       <View
         style={{

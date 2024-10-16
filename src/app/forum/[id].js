@@ -17,6 +17,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function ForumInfo() {
   const { id } = useLocalSearchParams();
+  const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
   const [thread, setThread] = useState([]);
   const [comments, setComments] = useState([]);
@@ -42,6 +43,7 @@ export default function ForumInfo() {
       if (!response.ok) throw new Error("Network response was not ok");
       const result = await response.json();
       setComments(result);
+      console.log(result);
     } catch (error) {
       console.error("Erro ao recuperar dados dos comentários:", error);
     }
@@ -51,6 +53,29 @@ export default function ForumInfo() {
     fetchThread();
     fetchComments();
   }, []);
+
+  const postNewComment = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/forums/new-comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          forum_id: id,
+          comment: commentBody,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      fetchComments();
+      setCommentBody("");
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error);
+    }
+  };
 
   const recentReviews = [
     {
@@ -159,9 +184,14 @@ export default function ForumInfo() {
             value={commentBody}
             onChangeText={(t) => setCommentBody(t)}
           ></TextInput>
-          <Pressable style={{ display: "flex", height: "fit-content" }}>
-            <FontAwesome size={28} name="send" color="white" />
-          </Pressable>
+          {/* <Pressable style={{ display: "flex", height: "fit-content" }} > */}
+          <FontAwesome
+            size={28}
+            name="send"
+            color="white"
+            onPress={postNewComment}
+          />
+          {/* </Pressable> */}
         </View>
       </View>
     </ScrollView>

@@ -18,10 +18,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function Forum() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [commentTitle, setCommentTitle] = useState("");
-  const [commentBody, setCommentBody] = useState("");
+  const [threadTitle, setThreadTitle] = useState("");
+  const [threadBody, setThreadBody] = useState("");
 
   const [threads, setThreads] = useState([]);
+
+  const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
   const fetchThreads = async () => {
     try {
@@ -40,6 +42,31 @@ export default function Forum() {
   useEffect(() => {
     fetchThreads();
   }, []);
+
+  const postNewThread = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/forums/new-forum", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          title: threadTitle,
+          description: threadBody,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      fetchThreads();
+      setIsModalVisible(false);
+      setThreadTitle("");
+      setThreadBody("");
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error);
+    }
+  };
 
   // const recentReviews = [
   //   {
@@ -341,8 +368,8 @@ export default function Forum() {
                   borderRadius: 8,
                   outline: "none",
                 }}
-                value={commentTitle}
-                onChangeText={(t) => setCommentTitle(t)}
+                value={threadTitle}
+                onChangeText={(t) => setThreadTitle(t)}
               ></TextInput>
             </View>
 
@@ -369,12 +396,17 @@ export default function Forum() {
                   borderRadius: 8,
                   outline: "none",
                 }}
-                value={commentBody}
-                onChangeText={(t) => setCommentBody(t)}
+                value={threadBody}
+                onChangeText={(t) => setThreadBody(t)}
               ></TextInput>
-              <Pressable style={{ display: "flex", height: "fit-content" }}>
-                <FontAwesome size={28} name="send" color="white" />
-              </Pressable>
+              {/* <Pressable style={{ display: "flex", height: "fit-content" }}> */}
+              <FontAwesome
+                size={28}
+                name="send"
+                color="white"
+                onPress={postNewThread}
+              />
+              {/* </Pressable> */}
             </View>
           </View>
         </View>
