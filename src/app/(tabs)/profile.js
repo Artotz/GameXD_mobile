@@ -36,9 +36,9 @@ export default function Profile() {
       }
       const result = await response.json();
       console.log("users", result);
-      setUser(result[4]);
-      fetchFavorites(result[4]);
-      fetchUserReviews(result[4]);
+      setUser(result[2]);
+      fetchFavorites(result[2]);
+      fetchUserReviews(result[2]);
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -82,10 +82,10 @@ export default function Profile() {
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
-        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .from("profiles") // A tabela que armazena os perfis dos usuários
         .delete()
-        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
-  
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
+
       if (error) {
         console.error("Erro ao apagar conta:", error);
         Alert.alert("Erro ao apagar conta", error.message);
@@ -137,7 +137,7 @@ export default function Profile() {
         src={item.Games.header_image}
         width={50}
         height={50}
-        onPress={() => router.push(`../game/${item.Games.game_id}`)}
+        onPress={() => router.push(`../game/${item.game_id}`)}
       />
       <View
         style={{
@@ -234,11 +234,13 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteAccount}
+        >
+          <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+        </TouchableOpacity>
       </View>
-    
     </ScrollView>
   );
 }
@@ -345,7 +347,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
     marginTop: 30,
   },
   deleteButtonText: {
