@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -29,12 +29,12 @@ export default function Home() {
       const result = await response.json();
 
       //printing the result
-      console.log("Games", result);
+      // console.log("Games", result);
 
       setRecentGames(result);
       setIsLoading(false);
     } catch (error) {
-      console.error("Erro ao recuperar dados:", error);
+      // console.error("Erro ao recuperar dados:", error);
       setDidFetchFail(true);
     }
   };
@@ -44,7 +44,7 @@ export default function Home() {
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View style={{ marginHorizontal: 4 }}>
+    <View testID="GameCard" style={{ marginHorizontal: 4 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -63,8 +63,10 @@ export default function Home() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
       </View>
     );
   } else if (isLoading) {
@@ -76,6 +78,7 @@ export default function Home() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="ActivityIndicator"
       >
         <ActivityIndicator></ActivityIndicator>
       </View>
@@ -95,6 +98,7 @@ export default function Home() {
           style={{ width: "100%" }}
         >
           <FlatList
+            testID="FlatList"
             data={recentGames}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
