@@ -25,7 +25,7 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://192.168.0.6:3000/profiles`);
+      const response = await fetch(`http://127.0.0.1:3000/profiles`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -42,7 +42,7 @@ export default function Profile() {
   const fetchFavorites = async (data) => {
     try {
       const response = await fetch(
-        `http://192.168.0.6:3000/favorites/${data.id}`
+        `http://127.0.0.1:3000/favorites/${data.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -59,7 +59,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://192.168.0.6:3000/reviews/user-reviews/${data.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${data.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -167,6 +167,10 @@ export default function Profile() {
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
+        <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
@@ -228,6 +232,21 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
+  }, 
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
   },
   sectionTitle: {
     fontSize: 20,
@@ -239,8 +258,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
@@ -257,11 +276,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileInfo: {
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
-    gap: 8,
     backgroundColor: "#1C1A2B",
-    marginVertical: 32,
+    marginTop: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileInfoLeft: {
     flex: 1,
@@ -278,7 +298,7 @@ const styles = StyleSheet.create({
     width: "100%",
     gap: 8,
     backgroundColor: "#1C1A2B",
-    alignItems: "start",
+    alignItems: "center",
     justifyContent: "center",
     padding: 8,
   },
@@ -294,11 +314,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "#fff",
-    borderRadius: 999,
   },
   reviewProfilePhoto: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     backgroundColor: "#fff",
     borderRadius: 999,
   },

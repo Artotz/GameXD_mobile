@@ -1,4 +1,4 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,10 +17,11 @@ export default function GameInfo() {
   const { id } = useLocalSearchParams();
   const [gameInfo, setGameInfo] = useState({});
   const [gameReviews, setGameReviews] = useState([]);
+  const router = useRouter();
 
   const fetchGameInfo = async () => {
     try {
-      const response = await fetch(`http://192.168.0.6:3000/games/${id}`);
+      const response = await fetch(`http://127.0.0.1:3000/games/${id}`);
       const result = await response.json();
       console.log("game", result);
       setGameInfo(result);
@@ -31,7 +32,7 @@ export default function GameInfo() {
 
   const fetchGameReviews = async () => {
     try {
-      const response = await fetch(`http://192.168.0.6:3000/reviews/${id}`);
+      const response = await fetch(`http://127.0.0.1:3000/reviews/${id}`);
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -105,6 +106,11 @@ export default function GameInfo() {
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
+      {/* Botão de voltar, definir rota ao voltar */} 
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Icon name="arrow-left" size={24} color="#fff" />
+      </TouchableOpacity>
+      
       <View style={styles.container}>
         <Image
           resizeMode="cover"
@@ -116,7 +122,7 @@ export default function GameInfo() {
           // source={{ uri: "../assets/animalCrossing.jpg" }}
         />
 
-        <Text style={styles.gameTitle}>{id}</Text>
+        <Text style={styles.gameTitle}>GameXD n˚ {id}</Text>
         <Text style={styles.sectionTitle}>{gameInfo.name}</Text>
         <Text style={styles.gameBrand}>
           {gameInfo.publishers}
@@ -141,6 +147,7 @@ export default function GameInfo() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     display: "flex",
     backgroundColor: "#1C1A2B",
@@ -149,6 +156,9 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
+  },
+  backButton: {
+    left: 20,
   },
   title: {
     fontSize: 40,
@@ -168,8 +178,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
