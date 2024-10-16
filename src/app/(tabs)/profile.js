@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -79,13 +79,14 @@ export default function Profile() {
       console.error("Erro ao recuperar dados:", error);
     }
   };
+
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
-        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .from("profiles") // A tabela que armazena os perfis dos usuários
         .delete()
-        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
-  
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
+
       if (error) {
         console.error("Erro ao apagar conta:", error);
         Alert.alert("Erro ao apagar conta", error.message);
@@ -165,6 +166,7 @@ export default function Profile() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
       </View>
@@ -179,7 +181,7 @@ export default function Profile() {
           backgroundColor: "#1C1A2B",
         }}
       >
-        <ActivityIndicator></ActivityIndicator>
+        <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
       </View>
     );
   }
@@ -212,6 +214,7 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
+            testID="FlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -234,11 +237,13 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteAccount}
+        >
+          <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+        </TouchableOpacity>
       </View>
-    
     </ScrollView>
   );
 }
@@ -345,13 +350,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
     marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight:"bold",
-  }
-
+    fontWeight: "bold",
+  },
 });
