@@ -10,9 +10,11 @@ import {
   Image,
   FlatList,
   ScrollView,
+
   ActivityIndicator,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 
 export default function Search() {
@@ -105,11 +107,12 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Busca
-        {/* {"\n"}
-        {searchQuery} */}
-      </Text>
+      <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+      </View>
+      <Text style={styles.title}>Busca</Text>
+
       <TextInput
         style={{
           display: "flex",
@@ -123,6 +126,7 @@ export default function Search() {
           borderRadius: 999,
           outline: "none",
         }}
+
         value={searchQuery}
         onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
@@ -181,17 +185,33 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingTop: 30,
     gap: 8,
   },
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
+  },
+
   title: {
     fontSize: 40,
     fontWeight: "bold",
     marginBottom: 1,
     color: "white",
-    alignItems: "center",
-    textAlign: "center",
+    alignItems: "flex-start",
+
     marginTop: 20,
   },
   sectionTitle: {
@@ -204,8 +224,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
