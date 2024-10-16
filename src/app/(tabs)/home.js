@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -26,7 +26,6 @@ export default function Home() {
     Orbitron: require('../../../assets/fonts/Orbitron-VariableFont_wght.ttf'), // Certifique-se de que o caminho esteja correto
   });
 
-
   const fetchRecentGames = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:3000/games/recent-games`);
@@ -36,12 +35,13 @@ export default function Home() {
       const result = await response.json();
 
       //printing the result
-      console.log("Games", result);
+      // console.log("Games", result);
 
       setRecentGames(result);
       setIsLoading(false);
     } catch (error) {
-      console.error("Erro ao recuperar dados:", error);
+
+      // console.error("Erro ao recuperar dados:", error);
       setDidFetchFail(true);
     }
   };
@@ -51,7 +51,7 @@ export default function Home() {
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View style={{ marginHorizontal: 10 }}>
+    <View testID="GameCard" style={{ marginHorizontal: 10 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -70,8 +70,10 @@ export default function Home() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
       </View>
     );
   } else if (isLoading) {
@@ -83,6 +85,7 @@ export default function Home() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="ActivityIndicator"
       >
         <ActivityIndicator></ActivityIndicator>
       </View>
@@ -97,6 +100,7 @@ export default function Home() {
           <Text style={styles.textGame}>GameXD</Text>
         </View>
 
+
         <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
         <View style={styles.underline} />
         <ScrollView
@@ -105,6 +109,7 @@ export default function Home() {
           style={{ width: "100%" }}
         >
           <FlatList
+            testID="FlatList"
             data={recentGames}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -222,6 +227,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Orbitron',
   },
+
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -242,6 +248,7 @@ const styles = StyleSheet.create({
     height: 1,
     width: "100%",
     backgroundColor: "#AB72CE",
+
   },
   button: {
     width: "90%",
@@ -257,4 +264,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+});
 });

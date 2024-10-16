@@ -10,8 +10,9 @@ import {
   Image,
   FlatList,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function GameInfo() {
   const { id } = useLocalSearchParams();
@@ -19,14 +20,19 @@ export default function GameInfo() {
   const [gameReviews, setGameReviews] = useState([]);
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
   const fetchGameInfo = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:3000/games/${id}`);
       const result = await response.json();
       console.log("game", result);
       setGameInfo(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao carregar os detalhes do jogo:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -45,31 +51,10 @@ export default function GameInfo() {
     }
   };
 
-  // Dados de exemplo para cada seção
-  const recentGames = [
-    {
-      id: "1",
-      username: "ricardinn 1",
-      reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-    {
-      id: "2",
-      username: "ricardinn 2",
-      reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-    {
-      id: "3",
-      username: "ricardinn 3",
-      reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-  ];
-
   useEffect(() => {
     fetchGameInfo();
     fetchGameReviews();
   }, [id]);
-
-  // item.profiles.avatar_url, item.profiles.username, item.review_body
 
   const renderReviewItem = ({ item }) => (
     <View
@@ -104,6 +89,35 @@ export default function GameInfo() {
     </View>
   );
 
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       {/* Botão de voltar, definir rota ao voltar */} 
@@ -111,6 +125,7 @@ export default function GameInfo() {
         <Icon name="arrow-left" size={24} color="#fff" />
       </TouchableOpacity>
       
+
       <View style={styles.container}>
         <Image
           resizeMode="cover"

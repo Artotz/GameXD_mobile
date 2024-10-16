@@ -1,6 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -11,8 +10,11 @@ import {
   Image,
   FlatList,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
 
@@ -23,6 +25,9 @@ export default function Profile() {
 
   const [gamesTotal, setGamesTotal] = useState(0);
   const [reviewsTotal, setReviewsTotal] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -35,8 +40,11 @@ export default function Profile() {
       setUser(result[4]);
       fetchFavorites(result[4]);
       fetchUserReviews(result[4]);
+
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -74,46 +82,32 @@ export default function Profile() {
     }
   };
 
+
+  const handleDeleteAccount = async () => {
+    try {
+      const { error } = await supabase
+        .from("profiles") // A tabela que armazena os perfis dos usuários
+        .delete()
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
+
+      if (error) {
+        console.error("Erro ao apagar conta:", error);
+        Alert.alert("Erro ao apagar conta", error.message);
+      } else {
+        // Se deletar o perfil com sucesso, desloga o usuário e redireciona para a tela de login
+        await supabase.auth.signOut();
+        Alert.alert("Conta apagada com sucesso!");
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Erro ao tentar apagar conta:", error);
+      Alert.alert("Erro ao tentar apagar conta", error.message);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
   }, []);
-
-  // Dados de exemplo para cada seção
-  // const [favoriteGames, setFavoriteGames] = useState([]);
-  // const [recentReviews, setRecentReviews] = useState([]);
-
-  // [
-  //   { id: "1", title: "Game Long Name 1" },
-  //   { id: "2", title: "Game 2" },
-  //   { id: "3", title: "Game 3" },
-  //   { id: "4", title: "Game 4" },
-  //   { id: "5", title: "Game 5" },
-  // ];
-
-  // Dados de exemplo para cada seção
-  // const recentReviews = [
-  //   {
-  //     id: "1",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "1",
-  //     gameTitle: "Game Long Name 1",
-  //   },
-  //   {
-  //     id: "2",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "2",
-  //     gameTitle: "Game 2",
-  //   },
-  //   {
-  //     id: "3",
-  //     username: "ricardinn",
-  //     reviewBody: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-  //     gameId: "3",
-  //     gameTitle: "Game 3",
-  //   },
-  // ];
 
   const renderGameItem = ({ item }) => (
     <View style={{ marginHorizontal: 4 }}>
@@ -175,10 +169,41 @@ export default function Profile() {
               />
             ))}
           </View>
+
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
   );
+
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="FailedToFetch"
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
@@ -212,6 +237,8 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
+
+            testID="FlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -234,6 +261,13 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
+
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteAccount}
+        >
+          <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -349,5 +383,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     color: "white",
+  },
+
+  deleteButton: {
+    width: "90%",
+    height: 50,
+    backgroundColor: "#ff4d4f",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 30,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
