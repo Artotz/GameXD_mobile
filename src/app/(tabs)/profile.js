@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
@@ -39,6 +40,7 @@ export default function Profile() {
       setUser(result[4]);
       fetchFavorites(result[4]);
       fetchUserReviews(result[4]);
+
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -79,6 +81,7 @@ export default function Profile() {
       console.error("Erro ao recuperar dados:", error);
     }
   };
+
 
   const handleDeleteAccount = async () => {
     try {
@@ -151,6 +154,22 @@ export default function Profile() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            {[1, 2, 3, 4, 5].map((i) => (
+              <FontAwesome
+                key={i}
+                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+                size={10}
+                color="#FFD700" 
+              />
+            ))}
+          </View>
+
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
@@ -187,8 +206,12 @@ export default function Profile() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
+    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
+        <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
@@ -214,6 +237,7 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
+
             testID="FlatList"
             data={userFavorites}
             renderItem={renderGameItem}
@@ -237,6 +261,7 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
+
         <TouchableOpacity
           style={styles.deleteButton}
           onPress={handleDeleteAccount}
@@ -253,10 +278,25 @@ const styles = StyleSheet.create({
     display: "flex",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
+  }, 
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
   },
   sectionTitle: {
     fontSize: 20,
@@ -268,8 +308,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
@@ -286,11 +326,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileInfo: {
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
-    gap: 8,
     backgroundColor: "#1C1A2B",
-    marginVertical: 32,
+    marginTop: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileInfoLeft: {
     flex: 1,
@@ -307,7 +348,7 @@ const styles = StyleSheet.create({
     width: "100%",
     gap: 8,
     backgroundColor: "#1C1A2B",
-    alignItems: "start",
+    alignItems: "center",
     justifyContent: "center",
     padding: 8,
   },
@@ -323,11 +364,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "#fff",
-    borderRadius: 999,
   },
   reviewProfilePhoto: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     backgroundColor: "#fff",
     borderRadius: 999,
   },
@@ -344,6 +384,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
+
   deleteButton: {
     width: "90%",
     height: 50,

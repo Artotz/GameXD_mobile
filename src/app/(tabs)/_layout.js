@@ -35,6 +35,7 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
+
         name="forum"
         options={{
           title: "forum",

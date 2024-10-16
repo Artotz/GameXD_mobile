@@ -14,11 +14,17 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
+import { useFonts } from 'expo-font'; // Importar o hook do expo-font  
 
 export default function Home() {
   const [recentGames, setRecentGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
+
+   // Carregar a fonte Orbitron
+   const [fontsLoaded] = useFonts({
+    Orbitron: require('../../../assets/fonts/Orbitron-VariableFont_wght.ttf'), // Certifique-se de que o caminho esteja correto
+  });
 
   const fetchRecentGames = async () => {
     try {
@@ -34,6 +40,7 @@ export default function Home() {
       setRecentGames(result);
       setIsLoading(false);
     } catch (error) {
+
       // console.error("Erro ao recuperar dados:", error);
       setDidFetchFail(true);
     }
@@ -44,7 +51,7 @@ export default function Home() {
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View testID="GameCard" style={{ marginHorizontal: 4 }}>
+    <View testID="GameCard" style={{ marginHorizontal: 10 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -88,7 +95,11 @@ export default function Home() {
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <Text style={styles.title}>Bem vindo!</Text>
+        <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
+
 
         <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
         <View style={styles.underline} />
@@ -201,6 +212,22 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     gap: 8,
   },
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
+  },
+
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -219,8 +246,9 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
+
   },
   button: {
     width: "90%",
@@ -236,4 +264,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+});
 });
