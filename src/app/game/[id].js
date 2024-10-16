@@ -122,7 +122,7 @@ export default function GameInfo() {
           // source={{ uri: "../assets/animalCrossing.jpg" }}
         />
 
-        <Text style={styles.gameTitle}>GameXD n˚ {id}</Text>
+        console.log(`GameXD n˚ ${id}`);
         <Text style={styles.sectionTitle}>{gameInfo.name}</Text>
         <Text style={styles.gameBrand}>
           {gameInfo.publishers}
