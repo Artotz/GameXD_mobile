@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -13,12 +13,15 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
+import { useAuth } from "../../hook/AuthContext";
 
 export default function Profile() {
-  const [user, setUser] = useState({});
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -30,15 +33,16 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/profiles`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
-      console.log("users", result);
-      setUser(result[4]);
-      fetchFavorites(result[4]);
-      fetchUserReviews(result[4]);
+
+
+      const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+      setProfile(data)
+
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -49,7 +53,7 @@ export default function Profile() {
   const fetchFavorites = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${data.id}`
+        `http://127.0.0.1:3000/favorites/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -66,7 +70,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${data.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -103,6 +107,8 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUser();
+    fetchFavorites();
+    fetchUserReviews()
   }, []);
 
   const renderGameItem = ({ item }) => (
@@ -137,7 +143,7 @@ export default function Profile() {
         src={item.Games.header_image}
         width={50}
         height={50}
-        onPress={() => router.push(`../game/${item.Games.game_id}`)}
+        onPress={() => router.push(`../game/${item.game_id}`)}
       />
       <View
         style={{
@@ -150,6 +156,22 @@ export default function Profile() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            {[1, 2, 3, 4, 5].map((i) => (
+              <FontAwesome
+                key={i}
+                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+                size={10}
+                color="#FFD700" 
+              />
+            ))}
+          </View>
+
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
@@ -165,6 +187,7 @@ export default function Profile() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
       </View>
@@ -179,23 +202,27 @@ export default function Profile() {
           backgroundColor: "#1C1A2B",
         }}
       >
-        <ActivityIndicator></ActivityIndicator>
+        <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
       </View>
     );
   }
 
   return (
-    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
+    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
+        <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
               style={styles.profilePhoto}
-              source={{ uri: user.avatar_url }}
+              source={{ uri: profile.avatar_url }}
             />
           </View>
           <View style={styles.profileInfoRight}>
-            <Text style={styles.profileTitle}>{user.username}</Text>
+            <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
               {gamesTotal} jogos
               {"\n"}
@@ -212,6 +239,8 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
+
+            testID="FlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -234,9 +263,12 @@ export default function Profile() {
             alignItems: "center",
           }}
         />
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-        <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteAccount}
+        >
+          <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+        </TouchableOpacity>
       </View>
     
     </ScrollView>
@@ -248,10 +280,25 @@ const styles = StyleSheet.create({
     display: "flex",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
+  }, 
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
   },
   sectionTitle: {
     fontSize: 20,
@@ -263,8 +310,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
@@ -281,11 +328,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileInfo: {
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
-    gap: 8,
     backgroundColor: "#1C1A2B",
-    marginVertical: 32,
+    marginTop: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileInfoLeft: {
     flex: 1,
@@ -302,7 +350,7 @@ const styles = StyleSheet.create({
     width: "100%",
     gap: 8,
     backgroundColor: "#1C1A2B",
-    alignItems: "start",
+    alignItems: "center",
     justifyContent: "center",
     padding: 8,
   },
@@ -318,11 +366,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "#fff",
-    borderRadius: 999,
   },
   reviewProfilePhoto: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     backgroundColor: "#fff",
     borderRadius: 999,
   },
@@ -353,5 +400,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight:"bold",
   }
-
 });

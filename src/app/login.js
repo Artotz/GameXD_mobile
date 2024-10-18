@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { useRouter, Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Text,
@@ -13,7 +13,6 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
-import { useRouter } from "expo-router";
 
 const logo = require("../../assets/logo.png");
 
@@ -43,7 +42,6 @@ export default function LoginScreen() {
       router.replace("/home");
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -60,6 +58,7 @@ export default function LoginScreen() {
           autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
+          testID="emailInput"
         />
       </View>
 
@@ -73,6 +72,7 @@ export default function LoginScreen() {
           autoCapitalize="none"
           value={password}
           onChangeText={setPassword}
+          testID="passwordInput"
         />
       </View>
 
@@ -93,6 +93,7 @@ export default function LoginScreen() {
         style={styles.button}
         onPress={handleSignIn}
         disabled={loading}
+        testID="loginButton"
       >
         <Text style={styles.buttonText}>
           {loading ? "Entrando..." : "Entrar"}
@@ -150,7 +151,6 @@ const styles = StyleSheet.create({
     color: "#000", // Certifica-se de que o texto dentro da caixa de texto é visível
     fontSize: 16,
     height: "100%", // Garante que o TextInput preencha toda a altura da View
-    height: '100%', // Garante que o TextInput preencha toda a altura da View
   },
   button: {
     width: "90%",

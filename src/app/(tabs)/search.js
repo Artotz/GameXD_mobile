@@ -10,19 +10,47 @@ import {
   Image,
   FlatList,
   ScrollView,
+
   ActivityIndicator,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [delaySearchQuery, setDelaySearchQuery] = useState("");
 
+  const [recentGames, setRecentGames] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [didFetchFail, setDidFetchFail] = useState(false);
 
+  const searchGames = async (query) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:3000/games/search-game/${query}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      console.log("Games", result);
+      setRecentGames(result);
+      setIsLoading(false);
+      if (result.length == 0) setDidFetchFail(true);
+    } catch (error) {
+      console.error("Erro ao recuperar dados:", error);
+      setIsLoading(false);
+      setDidFetchFail(true);
+    }
+  };
+
   useEffect(() => {
+    if (searchQuery) setIsLoading(true);
+    else setIsLoading(false);
+    setDidFetchFail(false);
+
     const handler = setTimeout(() => {
       setDelaySearchQuery(searchQuery);
     }, 1000);
@@ -33,49 +61,45 @@ export default function Search() {
   }, [searchQuery]);
 
   useEffect(() => {
-    setIsLoading(true);
     if (delaySearchQuery) {
-      // deletar
-      setDidFetchFail(false);
+      searchGames(delaySearchQuery);
     }
-    // deletar
-    else setDidFetchFail(true);
   }, [delaySearchQuery]);
 
   // Dados de exemplo para cada seção
-  const recentGames = [
-    { id: "1", title: "Game Long Name 1" },
-    { id: "2", title: "Game 2" },
-    { id: "3", title: "Game 3" },
-    { id: "4", title: "Game 4" },
-    { id: "5", title: "Game 5" },
-    { id: "6", title: "Game 6" },
-    { id: "7", title: "Game 7" },
-    { id: "8", title: "Game 8" },
-    { id: "9", title: "Game 9" },
-    { id: "10", title: "Game 10" },
-    { id: "11", title: "Game 11" },
-    { id: "12", title: "Game 12" },
-    { id: "13", title: "Game 13" },
-    { id: "14", title: "Game 14" },
-    { id: "15", title: "Game 15" },
-    { id: "16", title: "Game 16" },
-    { id: "17", title: "Game 17" },
-    { id: "18", title: "Game 18" },
-    { id: "19", title: "Game 19" },
-    { id: "20", title: "Game 20" },
-    { id: "21", title: "Game 21" },
-    { id: "22", title: "Game 22" },
-    { id: "23", title: "Game 23" },
-    { id: "24", title: "Game 24" },
-    { id: "25", title: "Game 25" },
-  ];
+  // const recentGames = [
+  //   { id: "1", title: "Game Long Name 1" },
+  //   { id: "2", title: "Game 2" },
+  //   { id: "3", title: "Game 3" },
+  //   { id: "4", title: "Game 4" },
+  //   { id: "5", title: "Game 5" },
+  //   { id: "6", title: "Game 6" },
+  //   { id: "7", title: "Game 7" },
+  //   { id: "8", title: "Game 8" },
+  //   { id: "9", title: "Game 9" },
+  //   { id: "10", title: "Game 10" },
+  //   { id: "11", title: "Game 11" },
+  //   { id: "12", title: "Game 12" },
+  //   { id: "13", title: "Game 13" },
+  //   { id: "14", title: "Game 14" },
+  //   { id: "15", title: "Game 15" },
+  //   { id: "16", title: "Game 16" },
+  //   { id: "17", title: "Game 17" },
+  //   { id: "18", title: "Game 18" },
+  //   { id: "19", title: "Game 19" },
+  //   { id: "20", title: "Game 20" },
+  //   { id: "21", title: "Game 21" },
+  //   { id: "22", title: "Game 22" },
+  //   { id: "23", title: "Game 23" },
+  //   { id: "24", title: "Game 24" },
+  //   { id: "25", title: "Game 25" },
+  // ];
 
   const renderGameItem = ({ item }) => (
     <View style={{ margin: 4 }}>
       <GameCard
-        title={item.title}
-        src={""}
+        title={item.name}
+        src={item.header_image}
         onPress={() => router.push(`../game/${item.id}`)}
       />
     </View>
@@ -83,11 +107,12 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Busca
-        {/* {"\n"}
-        {searchQuery} */}
-      </Text>
+      <View style={styles.sectionLogo}>
+          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Text style={styles.textGame}>GameXD</Text>
+      </View>
+      <Text style={styles.title}>Busca</Text>
+
       <TextInput
         style={{
           display: "flex",
@@ -101,6 +126,7 @@ export default function Search() {
           borderRadius: 999,
           outline: "none",
         }}
+
         value={searchQuery}
         onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
@@ -159,17 +185,33 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingTop: 30,
     gap: 8,
   },
+  sectionLogo: {
+    backgroundColor: "#E1E1E1",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#8B5AA8",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
+  },
+
   title: {
     fontSize: 40,
     fontWeight: "bold",
     marginBottom: 1,
     color: "white",
-    alignItems: "center",
-    textAlign: "center",
+    alignItems: "flex-start",
+
     marginTop: 20,
   },
   sectionTitle: {
@@ -182,8 +224,8 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "90%",
-    backgroundColor: "white",
+    width: "100%",
+    backgroundColor: "#AB72CE",
   },
   button: {
     width: "90%",
