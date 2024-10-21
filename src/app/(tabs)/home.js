@@ -106,7 +106,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             testID="FlatList"
@@ -123,7 +123,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             data={recentGames}
@@ -139,7 +139,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             data={recentGames}
@@ -155,7 +155,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             data={recentGames}
@@ -171,7 +171,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             data={recentGames}
@@ -187,7 +187,7 @@ export default function Home() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{ width: "100%" }}
+          style={styles.scrollIndicator}
         >
           <FlatList
             data={recentGames}
@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
     color: "#8B5AA8",
@@ -227,7 +228,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Orbitron',
   },
-
+  scrollIndicator: {
+    width: "90%",
+  },
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -246,9 +249,9 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "100%",
+    width: "90%",
     backgroundColor: "#AB72CE",
-
+    marginBottom: 20,
   },
   button: {
     width: "90%",
@@ -258,11 +261,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 30,
+    
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
-});
 });

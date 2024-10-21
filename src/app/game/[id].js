@@ -12,6 +12,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function GameInfo() {
@@ -84,6 +85,21 @@ export default function GameInfo() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            {[1, 2, 3, 4, 5].map((i) => (
+              <FontAwesome
+                key={i}
+                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+                size={10}
+                color="#FFD700" 
+              />
+            ))}
+          </View>
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
@@ -195,6 +211,7 @@ const styles = StyleSheet.create({
     height: 1,
     width: "100%",
     backgroundColor: "#AB72CE",
+    marginBottom: 20,
   },
   button: {
     width: "90%",

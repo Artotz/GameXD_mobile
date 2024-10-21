@@ -206,8 +206,10 @@ export default function Forum() {
           alignItems: "center",
         }}
       >
-        <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-        <Text style={styles.forumTitle}>{item.title}</Text>
+        <button style={styles.button}>
+          <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+          <Text style={styles.forumTitle}>{item.title}</Text>
+        </button>
       </View>
     </Pressable>
   );
@@ -253,7 +255,7 @@ export default function Forum() {
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "100%", gap: 12, marginTop: 20 }}
+          style={{ display: "flex", width: "90%", gap: 4, marginTop: 20 }}
           contentContainerStyle={{
             justifyContent: "center",
             alignItems: "center",
@@ -268,7 +270,6 @@ export default function Forum() {
             flex: 1,
             width: "100%",
             height: "100%",
-            // backgroundColor: "rgba(0,0,0,0.25)",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -443,16 +444,16 @@ const styles = StyleSheet.create({
   underline: {
     height: 1,
     width: "90%",
-    backgroundColor: "white",
+    backgroundColor: "#AB72CE",
+    marginBottom: 20,
   },
   button: {
-    width: "90%",
-    height: 50,
+    width: "80%",
     backgroundColor: "#AB72CE",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 30,
+   
   },
   buttonText: {
     color: "#fff",
@@ -468,6 +469,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#fff",
     borderRadius: 999,
+    marginLeft: 50,
   },
   reviewProfilePhoto: {
     width: 50,
@@ -477,15 +479,16 @@ const styles = StyleSheet.create({
   },
   reviewUsername: {
     display: "flex",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     color: "#a4a3aa",
+    marginRight: 20,
   },
   forumTitle: {
     display: "flex",
-    fontSize: 18,
-    textAlign: "justify",
+    fontSize: 14,
     color: "white",
+    marginRight: 20,
   },
 });
