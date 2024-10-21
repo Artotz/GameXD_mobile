@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
     color: "#8B5AA8",
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "100%",
+    width: "90%",
     backgroundColor: "#AB72CE",
   },
   button: {

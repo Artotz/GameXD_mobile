@@ -126,33 +126,24 @@ export default function Profile() {
       style={{
         display: "flex",
         flexDirection: "row",
-        width: "100%",
-        gap: 12,
-        paddingHorizontal: 24,
-        justifyContent: "flex-start",
         alignItems: "center",
         marginBottom: 20,
       }}
     >
-      {/* <Image
-        style={styles.reviewProfilePhoto}
-        source={{ uri: "../assets/ricardo.png" }}
-      /> */}
       <GameCard
         // title={item.gameTitle}
         src={item.Games.header_image}
-        width={50}
-        height={50}
+        width={60}
+        height={60}
         onPress={() => router.push(`../game/${item.game_id}`)}
       />
       <View
         style={{
           display: "flex",
-          width: 300,
-          overflow: "hidden",
           justifyContent: "center",
-          alignItems: "center",
-          // paddingRight: 24,
+          alignItems: "flex-start",
+          gap: 2,
+          marginLeft: 80,
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
@@ -224,9 +215,9 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} jogos
+              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
               {"\n"}
-              {reviewsTotal} análises
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
             </Text>
           </View>
         </View>
@@ -257,11 +248,11 @@ export default function Profile() {
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "100%", gap: 12 }}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          // style={{ display: "flex", width: "100%", gap: 12 }}
+          // contentContainerStyle={{
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          // }}
         />
         <TouchableOpacity
           style={styles.deleteButton}
@@ -293,6 +284,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
     color: "#8B5AA8",
@@ -310,8 +302,9 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "100%",
+    width: "90%",
     backgroundColor: "#AB72CE",
+    marginBottom: 20,
   },
   button: {
     width: "90%",
@@ -328,34 +321,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileInfo: {
-    flexDirection: "column",
-    width: "100%",
-    backgroundColor: "#1C1A2B",
+    flexDirection: "row",
     marginTop: 15,
     alignItems: "center",
     justifyContent: "center",
   },
   profileInfoLeft: {
-    flex: 1,
     flexDirection: "row",
     width: "100%",
-    gap: 8,
     backgroundColor: "#1C1A2B",
     alignItems: "center",
     justifyContent: "center",
     padding: 8,
   },
   profileInfoRight: {
-    flex: 2,
     width: "100%",
     gap: 8,
-    backgroundColor: "#1C1A2B",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
+    alignItems: "start",
+    justifyContent: "start",
   },
   profileTitle: {
-    fontSize: 16,
+    fontSize: 30,
     color: "white",
   },
   profileText: {
@@ -366,12 +352,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "#fff",
+    borderRadius: 50,
   },
   reviewProfilePhoto: {
     width: 100,
     height: 100,
     backgroundColor: "#fff",
-    borderRadius: 999,
+    borderRadius: 50,
   },
   reviewUsername: {
     display: "flex",
@@ -387,7 +374,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   deleteButton: {
-    width: "90%",
+    width: "35%",
     height: 50,
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
@@ -397,7 +384,8 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: "#fff",
-    fontSize: 18,
-    fontWeight:"bold",
-  }
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+
 });
