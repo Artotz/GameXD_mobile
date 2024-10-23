@@ -204,6 +204,7 @@ export default function Forum() {
           gap: 50,
         }}
       >
+        
         <Image
           style={styles.profilePhoto}
           source={{ uri: item.profiles.avatar_url }}
@@ -474,10 +475,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#AB72CE",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
     alignItems: "center",
     fontSize: 10,
     width: 70,

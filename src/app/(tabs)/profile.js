@@ -200,10 +200,9 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal}{" "}
-              {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
+              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
               {"\n"}
-              {reviewsTotal} {reviewsTotal === 0 || 1 ? "Análise" : "Análises"}
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
             </Text>
           </View>
         </View>
@@ -268,6 +267,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
     color: "#F0ECF0",
@@ -359,17 +359,13 @@ const styles = StyleSheet.create({
   deleteButton: {
     width: "30%",
     height: 40,
-    backgroundColor: "#ff4d4f",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center", 
-    marginTop: 30,
+    width: "35%",
+    height: 50,
   },
   deleteButtonText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
   },
-
 
 });

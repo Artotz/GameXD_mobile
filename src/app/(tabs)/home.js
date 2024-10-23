@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
     color: "#F0ECF0",
