@@ -2,6 +2,7 @@ import { Link, router } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
+  Modal,
   Text,
   TextInput,
   View,
@@ -28,6 +29,8 @@ export default function Profile() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -80,30 +83,7 @@ export default function Profile() {
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
     }
-  };
-
-
-  const handleDeleteAccount = async () => {
-    try {
-      const { error } = await supabase
-        .from("profiles") // A tabela que armazena os perfis dos usuários
-        .delete()
-        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
-
-      if (error) {
-        console.error("Erro ao apagar conta:", error);
-        Alert.alert("Erro ao apagar conta", error.message);
-      } else {
-        // Se deletar o perfil com sucesso, desloga o usuário e redireciona para a tela de login
-        await supabase.auth.signOut();
-        Alert.alert("Conta apagada com sucesso!");
-        router.push("/login");
-      }
-    } catch (error) {
-      console.error("Erro ao tentar apagar conta:", error);
-      Alert.alert("Erro ao tentar apagar conta", error.message);
-    }
-  };
+  };   
 
   useEffect(() => {
     fetchUser();
@@ -145,21 +125,21 @@ export default function Profile() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            {[1, 2, 3, 4, 5].map((i) => (
-              <FontAwesome
-                key={i}
-                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
-                size={10}
-                color="#FFD700" 
-              />
-            ))}
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <FontAwesome
+              key={i}
+              name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+              size={10}
+              color="#FFD700"
+            />
+          ))}
+        </View>
 
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
@@ -200,7 +180,10 @@ export default function Profile() {
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
         <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Image
+            source={require("../../../assets/_Logo_.png")}
+            style={{ width: 30, height: 22 }}
+          />
           <Text style={styles.textGame}>GameXD</Text>
         </View>
         <View style={styles.profileInfo}>
@@ -213,9 +196,10 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{user.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
+              {gamesTotal}{" "}
+              {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
               {"\n"}
-              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? "Análise" : "Análises"}
             </Text>
           </View>
         </View>
@@ -228,7 +212,6 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
-
             testID="FlatList"
             data={userFavorites}
             renderItem={renderGameItem}
@@ -255,7 +238,6 @@ export default function Profile() {
 
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={handleDeleteAccount}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
@@ -273,22 +255,21 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  }, 
+  },
   sectionLogo: {
-    backgroundColor: "#E1E1E1",
-    width: "100%", 
+    backgroundColor: "#AB72CE",
+    width: "100%",
     padding: 10,
     flexDirection: "row",
-    alignItems: "center", 
+    alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
-    opacity: 0.7,
   },
   textGame: {
-    color: "#8B5AA8",
+    color: "#F0ECF0",
     marginLeft: 10,
     fontSize: 20,
-    fontFamily: 'Orbitron',
+    fontFamily: "Orbitron",
   },
   sectionTitle: {
     fontSize: 20,
@@ -373,8 +354,8 @@ const styles = StyleSheet.create({
   },
 
   deleteButton: {
-    width: "35%",
-    height: 50,
+    width: "30%",
+    height: 40,
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
@@ -383,7 +364,8 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: "#fff",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "bold",
   },
+
 });

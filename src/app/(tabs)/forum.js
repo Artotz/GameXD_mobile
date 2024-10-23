@@ -190,26 +190,29 @@ export default function Forum() {
         paddingHorizontal: 24,
         justifyContent: "flex-start",
         alignItems: "center",
-        marginBottom: 20,
       }}
     >
-      <Image
-        style={styles.profilePhoto}
-        source={{ uri: item.profiles.avatar_url }}
-      />
       <View
         style={{
           display: "flex",
-          width: 300,
-          overflow: "hidden",
-          justifyContent: "center",
+          flexDirection: "row",
+          width: 400,
           alignItems: "center",
+          borderBottomColor: "#AB72CE",
+          borderWidth: 0.9,
+          padding: 20,
+          gap: 50,
         }}
       >
-        <button style={styles.button}>
+        <Image
+          style={styles.profilePhoto}
+          source={{ uri: item.profiles.avatar_url }}
+        />
+        <View>
           <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
           <Text style={styles.forumTitle}>{item.title}</Text>
-        </button>
+          <button style={styles.button}>Responder</button>
+        </View>
       </View>
     </Pressable>
   );
@@ -217,6 +220,14 @@ export default function Forum() {
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
+        <View style={styles.sectionLogo}>
+          <Image
+            source={require("../../../assets/_Logo_.png")}
+            style={{ width: 30, height: 22 }}
+          />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
+
         <View
           style={{
             display: "flex",
@@ -426,6 +437,21 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     gap: 8,
   },
+  sectionLogo: {
+    backgroundColor: "#AB72CE",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#F0ECF0",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
+  },
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -448,12 +474,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    width: "80%",
     backgroundColor: "#AB72CE",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-   
+    alignItems: "center",
+    fontSize: 10,
+    width: 70,
+    marginTop: 5,
+    color: "white",
   },
   buttonText: {
     color: "#fff",
@@ -468,14 +497,14 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: 999,
-    marginLeft: 50,
+    borderRadius: 50,
+    marginLeft: 55,
   },
   reviewProfilePhoto: {
     width: 50,
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: 999,
+    borderRadius: 50,
   },
   reviewUsername: {
     display: "flex",
@@ -490,5 +519,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
     marginRight: 20,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    maxWidth: "70%",
   },
 });

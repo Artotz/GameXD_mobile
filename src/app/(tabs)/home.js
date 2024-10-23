@@ -96,10 +96,9 @@ export default function Home() {
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
         <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Image source={require('../../../assets/_Logo_.png')} style={{ width: 30, height: 22 }} />
           <Text style={styles.textGame}>GameXD</Text>
         </View>
-
 
         <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
         <View style={styles.underline} />
@@ -213,17 +212,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionLogo: {
-    backgroundColor: "#E1E1E1",
+    backgroundColor: "#AB72CE",
     width: "100%", 
     padding: 10,
     flexDirection: "row",
     alignItems: "center", 
     marginBottom: 30,
     marginTop: -30,
-    opacity: 0.7,
   },
   textGame: {
-    color: "#8B5AA8",
+    color: "#F0ECF0",
     marginLeft: 10,
     fontSize: 20,
     fontFamily: 'Orbitron',
