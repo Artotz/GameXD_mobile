@@ -18,9 +18,11 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
+import { useAuth } from "../../hook/AuthContext";
 
 export default function Profile() {
-  const [user, setUser] = useState({});
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -34,15 +36,15 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/profiles`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
-      console.log("users", result);
-      setUser(result[2]);
-      fetchFavorites(result[2]);
-      fetchUserReviews(result[2]);
+
+
+      const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+      setProfile(data)
 
       setIsLoading(false);
     } catch (error) {
@@ -54,7 +56,7 @@ export default function Profile() {
   const fetchFavorites = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${data.id}`
+        `http://127.0.0.1:3000/favorites/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -71,7 +73,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${data.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -87,6 +89,8 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUser();
+    fetchFavorites();
+    fetchUserReviews()
   }, []);
 
   const renderGameItem = ({ item }) => (
@@ -190,11 +194,11 @@ export default function Profile() {
           <View style={styles.profileInfoLeft}>
             <Image
               style={styles.profilePhoto}
-              source={{ uri: user.avatar_url }}
+              source={{ uri: profile.avatar_url }}
             />
           </View>
           <View style={styles.profileInfoRight}>
-            <Text style={styles.profileTitle}>{user.username}</Text>
+            <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
               {gamesTotal}{" "}
               {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
@@ -235,13 +239,13 @@ export default function Profile() {
           //   alignItems: "center",
           // }}
         />
-
         <TouchableOpacity
           style={styles.deleteButton}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
       </View>
+    
     </ScrollView>
   );
 }
@@ -352,14 +356,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
-
   deleteButton: {
     width: "30%",
     height: 40,
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center", 
     marginTop: 30,
   },
   deleteButtonText: {
@@ -367,5 +370,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
   },
+
 
 });
