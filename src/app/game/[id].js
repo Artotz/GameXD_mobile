@@ -85,21 +85,21 @@ export default function GameInfo() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            {[1, 2, 3, 4, 5].map((i) => (
-              <FontAwesome
-                key={i}
-                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
-                size={10}
-                color="#FFD700" 
-              />
-            ))}
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <FontAwesome
+              key={i}
+              name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+              size={10}
+              color="#FFD700"
+            />
+          ))}
+        </View>
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
     </View>
@@ -136,11 +136,10 @@ export default function GameInfo() {
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
-      {/* Botão de voltar, definir rota ao voltar */} 
+      {/* Botão de voltar, definir rota ao voltar */}
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
         <Icon name="arrow-left" size={24} color="#fff" />
       </TouchableOpacity>
-      
 
       <View style={styles.container}>
         <Image
@@ -178,7 +177,6 @@ export default function GameInfo() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     display: "flex",
     backgroundColor: "#1C1A2B",

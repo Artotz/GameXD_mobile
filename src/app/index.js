@@ -31,11 +31,7 @@ const Index = () => {
           <Image source={require("../../assets/logo.png")} />
         </View>
 
-        <Button
-          title="Continuar"
-          onPress={() => router.push("/login")}
-          containerStyles="w-full mt-7 bg-white rounded-2xl"
-        />
+        <Button title="Continuar" onPress={() => router.push("/login")} />
       </View>
     </ScrollView>
   );

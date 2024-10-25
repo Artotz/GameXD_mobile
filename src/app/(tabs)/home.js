@@ -14,17 +14,12 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
-import { useFonts } from 'expo-font'; // Importar o hook do expo-font  
+import Header from "../../components/Header";
 
 export default function Home() {
   const [recentGames, setRecentGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
-
-   // Carregar a fonte Orbitron
-   const [fontsLoaded] = useFonts({
-    Orbitron: require('../../../assets/fonts/Orbitron-VariableFont_wght.ttf'), // Certifique-se de que o caminho esteja correto
-  });
 
   const fetchRecentGames = async () => {
     try {
@@ -40,7 +35,6 @@ export default function Home() {
       setRecentGames(result);
       setIsLoading(false);
     } catch (error) {
-
       // console.error("Erro ao recuperar dados:", error);
       setDidFetchFail(true);
     }
@@ -61,141 +55,125 @@ export default function Home() {
   );
 
   // Fetch State Management
-  if (didFetchFail) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="FailedToFetch"
-      >
-        <FontAwesome size={28} name="exclamation-triangle" color="white" />
-        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
-      </View>
-    );
-  } else if (isLoading) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="ActivityIndicator"
-      >
-        <ActivityIndicator></ActivityIndicator>
-      </View>
-    );
-  }
+  // if (didFetchFail) {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: "100vh",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "#1C1A2B",
+  //       }}
+  //       testID="FailedToFetch"
+  //     >
+  //       <FontAwesome size={28} name="exclamation-triangle" color="white" />
+  //       {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
+  //     </View>
+  //   );
+  // } else if (isLoading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: "100vh",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "#1C1A2B",
+  //       }}
+  //       testID="ActivityIndicator"
+  //     >
+  //       <ActivityIndicator></ActivityIndicator>
+  //     </View>
+  //   );
+  // }
 
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/_Logo_.png')} style={{ width: 30, height: 22 }} />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+        <Header />
+
+        <Text style={styles.title}>Home</Text>
+        <View style={styles.underline} />
 
         <Text style={styles.sectionTitle}>Recentemente Adicionados</Text>
         <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            testID="FlatList"
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
+        {didFetchFail ? (
+          <View
+            style={{
+              marginTop: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#1C1A2B",
+            }}
+          >
+            <FontAwesome size={28} name="exclamation-triangle" color="white" />
+          </View>
+        ) : isLoading ? (
+          <View
+            style={{
+              marginTop: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#1C1A2B",
+            }}
+          >
+            <ActivityIndicator></ActivityIndicator>
+          </View>
+        ) : (
+          <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
+            style={styles.scrollIndicator}
+          >
+            <FlatList
+              testID="FlatList"
+              data={recentGames}
+              renderItem={renderGameItem}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </ScrollView>
+        )}
 
         <Text style={styles.sectionTitle}>Destaques da Semana</Text>
         <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
+        {didFetchFail ? (
+          <View
+            style={{
+              marginTop: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#1C1A2B",
+            }}
+          >
+            <FontAwesome size={28} name="exclamation-triangle" color="white" />
+          </View>
+        ) : isLoading ? (
+          <View
+            style={{
+              marginTop: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#1C1A2B",
+            }}
+          >
+            <ActivityIndicator></ActivityIndicator>
+          </View>
+        ) : (
+          <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
-        <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
-        <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
-        <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
-
-        <Text style={styles.sectionTitle}>Destaques da Semana</Text>
-        <View style={styles.underline} />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollIndicator}
-        >
-          <FlatList
-            data={recentGames}
-            renderItem={renderGameItem}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </ScrollView>
+            style={styles.scrollIndicator}
+          >
+            <FlatList
+              data={recentGames}
+              renderItem={renderGameItem}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </ScrollView>
+        )}
       </View>
     </ScrollView>
   );
@@ -210,22 +188,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%", 
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center", 
-    marginBottom: 30,
-    marginTop: -30,
-    opacity: 0.7,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: 'Orbitron',
   },
   scrollIndicator: {
     width: "90%",
@@ -260,7 +222,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 30,
-    
   },
   buttonText: {
     color: "#fff",

@@ -13,6 +13,7 @@ export default function RootLayout() {
         <Stack.Screen name="(account)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="game/[id]" />
+        <Stack.Screen name="profile/[id]" />
         <Stack.Screen name="forum/[id]" />
       </Stack>
     </AuthProvider>

@@ -19,10 +19,11 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
+import Header from "../../components/Header";
 
 export default function Profile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({});
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -91,6 +92,28 @@ export default function Profile() {
     fetchUserReviews();
   }, []);
 
+  const handleDeleteAccount = async () => {
+    try {
+      const { error } = await supabase
+        .from("profiles") // A tabela que armazena os perfis dos usuários
+        .delete()
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
+
+      if (error) {
+        console.error("Erro ao apagar conta:", error);
+        Alert.alert("Erro ao apagar conta", error.message);
+      } else {
+        // Se deletar o perfil com sucesso, desloga o usuário e redireciona para a tela de login
+        await supabase.auth.signOut();
+        Alert.alert("Conta apagada com sucesso!");
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Erro ao tentar apagar conta:", error);
+      Alert.alert("Erro ao tentar apagar conta", error.message);
+    }
+  };
+
   const renderGameItem = ({ item }) => (
     <View style={{ marginHorizontal: 4 }}>
       <GameCard
@@ -149,45 +172,40 @@ export default function Profile() {
   );
 
   // Fetch State Management
-  if (didFetchFail) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="FailedToFetch"
-      >
-        <FontAwesome size={28} name="exclamation-triangle" color="white" />
-      </View>
-    );
-  } else if (isLoading) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-      >
-        <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
-      </View>
-    );
-  }
+  // if (didFetchFail) {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: "100vh",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "#1C1A2B",
+  //       }}
+  //       testID="FailedToFetch"
+  //     >
+  //       <FontAwesome size={28} name="exclamation-triangle" color="white" />
+  //     </View>
+  //   );
+  // } else if (isLoading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: "100vh",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "#1C1A2B",
+  //       }}
+  //     >
+  //       <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
+  //     </View>
+  //   );
+  // }
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+        <Header />
+
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
@@ -237,7 +255,10 @@ export default function Profile() {
           //   alignItems: "center",
           // }}
         />
-        <TouchableOpacity style={styles.deleteButton}>
+        <TouchableOpacity
+          // onPress={handleDeleteAccount}
+          style={styles.deleteButton}
+        >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
       </View>
@@ -254,22 +275,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%",
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: -30,
-    opacity: 0.7,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: "Orbitron",
   },
   sectionTitle: {
     fontSize: 20,
@@ -355,8 +360,11 @@ const styles = StyleSheet.create({
   deleteButton: {
     width: "30%",
     height: 40,
-    width: "35%",
-    height: 50,
+    backgroundColor: "#ff4d4f",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
