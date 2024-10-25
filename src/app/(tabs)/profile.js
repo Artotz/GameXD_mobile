@@ -17,7 +17,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
-import { supabase } from "../db/supabase";
+import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
 
 export default function Profile() {
@@ -36,15 +36,13 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
-
-
       const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
-      setProfile(data)
+      setProfile(data);
 
       setIsLoading(false);
     } catch (error) {
@@ -85,12 +83,12 @@ export default function Profile() {
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
     }
-  };   
+  };
 
   useEffect(() => {
     fetchUser();
     fetchFavorites();
-    fetchUserReviews()
+    fetchUserReviews();
   }, []);
 
   const renderGameItem = ({ item }) => (
@@ -200,9 +198,10 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
+              {gamesTotal}{" "}
+              {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
               {"\n"}
-              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? "Análise" : "Análises"}
             </Text>
           </View>
         </View>
@@ -238,13 +237,10 @@ export default function Profile() {
           //   alignItems: "center",
           // }}
         />
-        <TouchableOpacity
-          style={styles.deleteButton}
-        >
+        <TouchableOpacity style={styles.deleteButton}>
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
       </View>
-    
     </ScrollView>
   );
 }
@@ -367,5 +363,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
   },
-
 });

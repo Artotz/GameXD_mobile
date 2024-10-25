@@ -10,7 +10,6 @@ import {
   Image,
   FlatList,
   ScrollView,
-
   ActivityIndicator,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -108,10 +107,14 @@ export default function Search() {
   return (
     <View style={styles.container}>
       <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/_Logo_.png')} style={{ width: 30, height: 22 }} />
-          <Text style={styles.textGame}>GameXD</Text>
+        <Image
+          source={require("../../../assets/_Logo_.png")}
+          style={{ width: 30, height: 22 }}
+        />
+        <Text style={styles.textGame}>GameXD</Text>
       </View>
       <Text style={styles.title}>Busca</Text>
+      <View style={styles.underline} />
 
       <TextInput
         style={{
@@ -126,11 +129,9 @@ export default function Search() {
           borderRadius: 999,
           outline: "none",
         }}
-
         value={searchQuery}
         onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
-      <View style={styles.underline} />
       {didFetchFail ? (
         <View
           style={{
@@ -191,19 +192,18 @@ const styles = StyleSheet.create({
   },
   sectionLogo: {
     backgroundColor: "#AB72CE",
-    width: "100%", 
+    width: "100%",
     padding: 10,
     flexDirection: "row",
-    alignItems: "center", 
+    alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
-    opacity: 0.7,
   },
   textGame: {
     color: "#F0ECF0",
     marginLeft: 10,
     fontSize: 20,
-    fontFamily: 'Orbitron',
+    fontFamily: "Orbitron",
   },
 
   title: {

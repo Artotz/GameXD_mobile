@@ -1,10 +1,16 @@
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Text, TextInput, View, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { useState } from 'react';
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useState } from "react";
 
-export default function EmailScreen() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
@@ -14,12 +20,10 @@ export default function EmailScreen() {
         <Icon name="arrow-left" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <Text style={styles.title}>Recuperar Senha 
-      </Text>
+      <Text style={styles.title}>Recuperar Senha</Text>
 
       <Text style={styles.forgotPasswordText}>
-      Por favor, coloque seu endereço de
-      e-mail para solicitar uma nova senha.
+        Por favor, coloque seu endereço de e-mail para solicitar uma nova senha.
       </Text>
 
       <View style={styles.inputContainer}>
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "#fff",
     marginBottom: 40,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputContainer: {
     flexDirection: "row",
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#000",
     fontSize: 16,
-    height: '100%',
+    height: "100%",
   },
   button: {
     width: "90%",
@@ -97,9 +101,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   forgotPasswordText: {
-    color: '#F0ECF0',
+    color: "#F0ECF0",
     fontSize: 16,
-    fontWeight: 'thin',
+    fontWeight: "thin",
     marginBottom: 20,
     marginTop: -20,
   },
