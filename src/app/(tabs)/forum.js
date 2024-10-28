@@ -190,24 +190,30 @@ export default function Forum() {
         paddingHorizontal: 24,
         justifyContent: "flex-start",
         alignItems: "center",
-        marginBottom: 20,
       }}
     >
-      <Image
-        style={styles.profilePhoto}
-        source={{ uri: item.profiles.avatar_url }}
-      />
       <View
         style={{
           display: "flex",
-          width: 300,
-          overflow: "hidden",
-          justifyContent: "center",
+          flexDirection: "row",
+          width: 400,
           alignItems: "center",
+          borderBottomColor: "#AB72CE",
+          borderWidth: 0.9,
+          padding: 20,
+          gap: 50,
         }}
       >
-        <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-        <Text style={styles.forumTitle}>{item.title}</Text>
+        
+        <Image
+          style={styles.profilePhoto}
+          source={{ uri: item.profiles.avatar_url }}
+        />
+        <View>
+          <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
+          <Text style={styles.forumTitle}>{item.title}</Text>
+          <button style={styles.button}>Responder</button>
+        </View>
       </View>
     </Pressable>
   );
@@ -215,6 +221,14 @@ export default function Forum() {
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
+        <View style={styles.sectionLogo}>
+          <Image
+            source={require("../../../assets/_Logo_.png")}
+            style={{ width: 30, height: 22 }}
+          />
+          <Text style={styles.textGame}>GameXD</Text>
+        </View>
+
         <View
           style={{
             display: "flex",
@@ -253,7 +267,7 @@ export default function Forum() {
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "100%", gap: 12, marginTop: 20 }}
+          style={{ display: "flex", width: "90%", gap: 4, marginTop: 20 }}
           contentContainerStyle={{
             justifyContent: "center",
             alignItems: "center",
@@ -268,7 +282,6 @@ export default function Forum() {
             flex: 1,
             width: "100%",
             height: "100%",
-            // backgroundColor: "rgba(0,0,0,0.25)",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -425,6 +438,21 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     gap: 8,
   },
+  sectionLogo: {
+    backgroundColor: "#AB72CE",
+    width: "100%", 
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center", 
+    marginBottom: 30,
+    marginTop: -30,
+  },
+  textGame: {
+    color: "#F0ECF0",
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: 'Orbitron',
+  },
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -443,16 +471,15 @@ const styles = StyleSheet.create({
   underline: {
     height: 1,
     width: "90%",
-    backgroundColor: "white",
+    backgroundColor: "#AB72CE",
+    marginBottom: 20,
   },
   button: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#AB72CE",
-    borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 30,
+    fontSize: 10,
+    width: 70,
+    marginTop: 5,
+    color: "white",
   },
   buttonText: {
     color: "#fff",
@@ -467,25 +494,30 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: 999,
+    borderRadius: 50,
+    marginLeft: 55,
   },
   reviewProfilePhoto: {
     width: 50,
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: 999,
+    borderRadius: 50,
   },
   reviewUsername: {
     display: "flex",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     color: "#a4a3aa",
+    marginRight: 20,
   },
   forumTitle: {
     display: "flex",
-    fontSize: 18,
-    textAlign: "justify",
+    fontSize: 14,
     color: "white",
+    marginRight: 20,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    maxWidth: "70%",
   },
 });
