@@ -18,13 +18,13 @@ describe("Profile", () => {
     fetchMock.resetMocks();
   });
 
-  it("Mostrar ActivityIndicator enquanto carrega", () => {
+  it("1) Mostrar ActivityIndicator enquanto carrega", () => {
     render(<Profile />);
 
     expect(screen.getByTestId("ActivityIndicator")).toBeTruthy();
   });
 
-  it("Mostrar FailedToFetch se não carregar", async () => {
+  it("2) Mostrar FailedToFetch se não carregar", async () => {
     render(<Profile />);
 
     await waitFor(() =>
@@ -32,19 +32,93 @@ describe("Profile", () => {
     );
   });
 
-  // it("Mostrar jogos em FlatList ao carregar", async () => {
-  //   const mockGames = [
-  //     { id: "1", name: "Game 1", header_image: "image1.png" },
-  //     { id: "2", name: "Game 2", header_image: "image2.png" },
-  //   ];
+  it("3) Mostrar items em FlatList ao carregar", async () => {
+    const mockProfiles = [
+      { id: 1, avatar_url: "image1.png", username: "User 1" },
+      { id: 2, avatar_url: "image2.png", username: "User 2" },
+      { id: 3, avatar_url: "image3.png", username: "User 3" },
+    ];
 
-  //   fetchMock.mockResponse(JSON.stringify(mockGames));
+    const mockFavorites = [
+      {
+        id: 1,
+        game_id: "1",
+        Games: { name: "Game 1", header_image: "image1.png" },
+      },
+      {
+        id: 2,
+        game_id: "2",
+        Games: { name: "Game 2", header_image: "image2.png" },
+      },
+      {
+        id: 3,
+        game_id: "3",
+        Games: { name: "Game 3", header_image: "image3.png" },
+      },
+    ];
 
-  //   render(<Home />);
+    const mockReviews = [
+      {
+        id: 1,
+        game_id: "1",
+        name: "Game 1",
+        Games: { header_image: "image1.png" },
+        profiles: { username: "Username" },
+        star_rating: 3,
+        review_body: "Review 1",
+      },
+      {
+        id: 2,
+        game_id: "2",
+        name: "Game 2",
+        Games: { header_image: "image2.png" },
+        profiles: { username: "Username" },
+        star_rating: 3,
+        review_body: "Review 2",
+      },
+      {
+        id: 3,
+        game_id: "3",
+        name: "Game 3",
+        Games: { header_image: "image3.png" },
+        profiles: { username: "Username" },
+        star_rating: 3,
+        review_body: "Review 3",
+      },
+    ];
 
-  //   await waitFor(() => expect(screen.getByTestId("FlatList")).toBeTruthy());
+    fetchMock.mockIf(/^http:\/\/127.0.0.1:3000.*$/, async (req) => {
+      // console.log(req.url);
 
-  //   const flatListItems = screen.getAllByTestId("GameCard");
-  //   expect(flatListItems.length).toBe(2);
-  // });
+      if (req.url.includes("profiles")) {
+        return JSON.stringify(mockProfiles);
+      } else if (req.url.includes("favorites")) {
+        return JSON.stringify(mockFavorites);
+      } else if (req.url.includes("reviews")) {
+        return JSON.stringify(mockReviews);
+      } else {
+        return {
+          status: 404,
+          body: "Not Found",
+        };
+      }
+    });
+
+    render(<Profile />);
+
+    await waitFor(() =>
+      expect(screen.getByTestId("FavoritesFlatList")).toBeTruthy()
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("ReviewsFlatList")).toBeTruthy()
+    );
+
+    const favoritesFlatListItems = screen.getAllByTestId(
+      "FavoritesFlatListItem"
+    );
+    expect(favoritesFlatListItems.length).toBe(mockFavorites.length);
+
+    const reviewsFlatListItems = screen.getAllByTestId("ReviewsFlatListItem");
+    expect(reviewsFlatListItems.length).toBe(mockReviews.length);
+  });
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react-native";
-import Home from "../../src/app/(tabs)/home.js";
+import Forum from "../../src/app/(tabs)/forum.js";
 import fetchMock from "jest-fetch-mock";
 
 jest.mock("expo-router", () => ({
@@ -9,19 +9,19 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@expo/vector-icons/FontAwesome", () => () => <></>);
 
-describe("Home", () => {
+describe("Forum", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
 
   it("1) Mostrar ActivityIndicator enquanto carrega", () => {
-    render(<Home />);
+    render(<Forum />);
 
     expect(screen.getByTestId("ActivityIndicator")).toBeTruthy();
   });
 
   it("2) Mostrar FailedToFetch se não carregar", async () => {
-    render(<Home />);
+    render(<Forum />);
 
     await waitFor(() =>
       expect(screen.getByTestId("FailedToFetch")).toBeTruthy()
@@ -29,21 +29,33 @@ describe("Home", () => {
   });
 
   it("3) Mostrar jogos em FlatList ao carregar", async () => {
-    const mockGames = [
-      { id: "1", name: "Game 1", header_image: "image1.png" },
-      { id: "2", name: "Game 2", header_image: "image2.png" },
-      { id: "3", name: "Game 3", header_image: "image3.png" },
+    const mockThreads = [
+      {
+        id: "1",
+        title: "Thread 1",
+        profiles: { username: "Username 1", avatar_url: "image1.png" },
+      },
+      {
+        id: "2",
+        title: "Thread 2",
+        profiles: { username: "Username 2", avatar_url: "image2.png" },
+      },
+      {
+        id: "3",
+        title: "Thread 3",
+        profiles: { username: "Username 3", avatar_url: "image3.png" },
+      },
     ];
 
-    fetchMock.mockResponse(JSON.stringify(mockGames));
+    fetchMock.mockResponse(JSON.stringify(mockThreads));
 
-    render(<Home />);
+    render(<Forum />);
 
     await waitFor(() => expect(screen.getByTestId("FlatList")).toBeTruthy());
 
     const flatListItems = screen.getAllByTestId("FlatListItem");
 
     // 6 seções iguais em Home
-    expect(flatListItems.length).toBe(mockGames.length * 6);
+    expect(flatListItems.length).toBe(mockThreads.length);
   });
 });

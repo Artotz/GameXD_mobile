@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -25,6 +25,9 @@ export default function Forum() {
 
   const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
   const fetchThreads = async () => {
     try {
       const response = await fetch("http://127.0.0.1:3000/forums");
@@ -34,8 +37,10 @@ export default function Forum() {
       const result = await response.json();
       console.log("Threads", result);
       setThreads(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -68,119 +73,9 @@ export default function Forum() {
     }
   };
 
-  // const recentReviews = [
-  //   {
-  //     id: "1",
-  //     profiles: {
-  //       username: "ricardinn1",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "2",
-  //     profiles: {
-  //       username: "ricardinn2",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "3",
-  //     profiles: {
-  //       username: "ricardinn3",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "4",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "5",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "6",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "7",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "8",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "9",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "10",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "11",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "12",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  // ];
-
   const renderReviewItem = ({ item }) => (
     <Pressable
+      testID="FlatListItem"
       onPress={() => router.push(`../forum/${item.id}`)}
       style={{
         display: "flex",
@@ -217,6 +112,38 @@ export default function Forum() {
       </View>
     </Pressable>
   );
+
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="FailedToFetch"
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="ActivityIndicator"
+      >
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
@@ -263,6 +190,7 @@ export default function Forum() {
         <View style={styles.underline} />
 
         <FlatList
+          testID="FlatList"
           data={threads}
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}

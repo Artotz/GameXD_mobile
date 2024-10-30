@@ -1,5 +1,5 @@
 import { Link, useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -24,14 +24,19 @@ export default function ForumInfo() {
 
   const [commentBody, setCommentBody] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
   const fetchThread = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:3000/forums/forum/${id}`);
       if (!response.ok) throw new Error("Network response was not ok");
       const result = await response.json();
       setThread(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -139,9 +144,41 @@ export default function ForumInfo() {
     </View>
   );
 
+  // Fetch State Management
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="FailedToFetch"
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="ActivityIndicator"
+      >
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
-      <View style={styles.container}>
+      <View style={styles.container} testID="ThreadInfoContainer">
         <Text style={styles.title}>{thread.title}</Text>
         <Text style={styles.sectionTitle}>{thread.description}</Text>
         <View style={styles.underline} />
