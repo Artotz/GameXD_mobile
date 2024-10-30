@@ -30,9 +30,6 @@ export default function Forum() {
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [didFetchFail, setDidFetchFail] = useState(false);
-
   const fetchThreads = async () => {
     try {
       const response = await fetch("http://127.0.0.1:3000/forums");
@@ -43,10 +40,8 @@ export default function Forum() {
       console.log("Threads", result);
       setThreads(result);
       setIsLoading(false);
-      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
-      setDidFetchFail(true);
       setDidFetchFail(true);
     }
   };
@@ -127,38 +122,6 @@ export default function Forum() {
       </View>
     </Pressable>
   );
-
-  // Fetch State Management
-  if (didFetchFail) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="FailedToFetch"
-      >
-        <FontAwesome size={28} name="exclamation-triangle" color="white" />
-        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
-      </View>
-    );
-  } else if (isLoading) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="ActivityIndicator"
-      >
-        <ActivityIndicator></ActivityIndicator>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>

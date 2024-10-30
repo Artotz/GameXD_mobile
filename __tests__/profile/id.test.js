@@ -1,15 +1,18 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react-native";
-import Profile from "../../src/app/(tabs)/profile.js";
+import ProfileInfo from "../../src/app/profile/[id].js";
 import fetchMock from "jest-fetch-mock";
 
 jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
+  useLocalSearchParams: jest.fn(() => 1),
 }));
+
+jest.mock("../../src/components/Header.js", () => () => <></>);
 
 jest.mock("@expo/vector-icons/FontAwesome", () => () => <></>);
 
-jest.mock("../../src/app/db/supabase.js", () => ({
+jest.mock("../../src/db/supabase.js", () => ({
   supabase: {},
 }));
 
@@ -19,13 +22,13 @@ describe("Profile", () => {
   });
 
   it("1) Mostrar ActivityIndicator enquanto carrega", () => {
-    render(<Profile />);
+    render(<ProfileInfo />);
 
     expect(screen.getByTestId("ActivityIndicator")).toBeTruthy();
   });
 
   it("2) Mostrar FailedToFetch se não carregar", async () => {
-    render(<Profile />);
+    render(<ProfileInfo />);
 
     await waitFor(() =>
       expect(screen.getByTestId("FailedToFetch")).toBeTruthy()
@@ -104,7 +107,7 @@ describe("Profile", () => {
       }
     });
 
-    render(<Profile />);
+    render(<ProfileInfo />);
 
     await waitFor(() =>
       expect(screen.getByTestId("FavoritesFlatList")).toBeTruthy()

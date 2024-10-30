@@ -9,6 +9,8 @@ import {
   Button,
 } from "react-native";
 
+import logo from "../../assets/logo.png";
+
 const Index = () => {
   return (
     <ScrollView
@@ -28,7 +30,7 @@ const Index = () => {
         }}
       >
         <View>
-          <Image source={require("../../assets/logo.png")} />
+          <Image source={logo} />
         </View>
 
         <Button title="Continuar" onPress={() => router.push("/login")} />

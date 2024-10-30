@@ -4,6 +4,8 @@ import { ScrollView, Button, Text, View, Image } from "react-native";
 
 const AuthContext = createContext();
 
+import logo from "../../assets/logo.png";
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,7 @@ export const AuthProvider = ({ children }) => {
             }}
           >
             <View>
-              <Image source={require("../../assets/logo.png")} />
+              <Image source={logo} />
             </View>
             <Text
               style={{

@@ -19,6 +19,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
 
+import logo from "../../../assets/logo.png";
+
 export default function EditProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState({});
@@ -114,10 +116,7 @@ export default function EditProfile() {
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
         <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
+          <Image source={logo} style={{ width: 30, height: 22 }} />
           <Text style={styles.textGame}>GameXD</Text>
         </View>
 

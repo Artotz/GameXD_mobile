@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useForm, Controller } from "react-hook-form";
 import { supabase } from "../../db/supabase.js";
 
-const logo = require("../../../assets/logo.png");
+import logo from "../../../assets/logo.png";
 
 export default function SignUp() {
   const router = useRouter(); // para navegação após cadastro

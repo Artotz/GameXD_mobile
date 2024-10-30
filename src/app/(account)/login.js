@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import { supabase } from "../../db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
 
-const logo = require("../../../assets/logo.png");
+import logo from "../../../assets/logo.png";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");

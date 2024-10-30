@@ -38,15 +38,17 @@ export default function ProfileInfo() {
 
   const fetchUser = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", id)
         .single();
 
-      setProfile(data);
-
-      setIsLoading(false);
+      if (data) {
+        setProfile(data);
+        setIsLoading(false);
+      } else setDidFetchFail(true);
+      console.log("data ", data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
       setDidFetchFail(true);
@@ -172,34 +174,34 @@ export default function ProfileInfo() {
   );
 
   // Fetch State Management
-  // if (didFetchFail) {
-  //   return (
-  //     <View
-  //       style={{
-  //         height: "100vh",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         backgroundColor: "#1C1A2B",
-  //       }}
-  //       testID="FailedToFetch"
-  //     >
-  //       <FontAwesome size={28} name="exclamation-triangle" color="white" />
-  //     </View>
-  //   );
-  // } else if (isLoading) {
-  //   return (
-  //     <View
-  //       style={{
-  //         height: "100vh",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         backgroundColor: "#1C1A2B",
-  //       }}
-  //     >
-  //       <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
-  //     </View>
-  //   );
-  // }
+  if (didFetchFail) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+        testID="FailedToFetch"
+      >
+        <FontAwesome size={28} name="exclamation-triangle" color="white" />
+      </View>
+    );
+  } else if (isLoading) {
+    return (
+      <View
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#1C1A2B",
+        }}
+      >
+        <ActivityIndicator testID="ActivityIndicator"></ActivityIndicator>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
@@ -267,6 +269,7 @@ export default function ProfileInfo() {
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",

@@ -2,18 +2,18 @@ import React from "react";
 import { Image, Text, View, StyleSheet } from "react-native";
 import { useFonts } from "expo-font"; // Importar o hook do expo-font
 
+import logo from "../../assets/logo.png";
+import Orbitron from "../../assets/fonts/Orbitron-VariableFont_wght.ttf";
+
 export default function Header() {
   // Carregar a fonte Orbitron
   const [fontsLoaded] = useFonts({
-    Orbitron: require("../../assets/fonts/Orbitron-VariableFont_wght.ttf"), // Certifique-se de que o caminho esteja correto
+    Orbitron,
   });
 
   return (
     <View style={styles.sectionLogo}>
-      <Image
-        source={require("../../assets/_Logo_.png")}
-        style={{ width: 30, height: 22 }}
-      />
+      <Image source={logo} style={{ width: 30, height: 22 }} />
       <Text style={styles.textGame}>GameXD</Text>
     </View>
   );

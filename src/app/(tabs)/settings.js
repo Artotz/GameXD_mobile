@@ -102,7 +102,7 @@ export default function Settings() {
         <Header />
 
         <TouchableOpacity
-          onPress={() => router.push(`../profile/${user.id}`)}
+          onPress={() => router.push(`../profile/${user ? user.id : "error"}`)}
           style={styles.button}
         >
           <Text style={styles.deleteButtonText}>Ver Perfil</Text>
