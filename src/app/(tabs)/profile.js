@@ -85,7 +85,28 @@ export default function Profile() {
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
     }
-  };   
+  };
+  const handleDeleteAccount = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .delete()
+        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
+  
+      if (error) {
+        console.error("Erro ao apagar conta:", error);
+        Alert.alert("Erro ao apagar conta", error.message);
+      } else {
+        // Se deletar o perfil com sucesso, desloga o usuário e redireciona para a tela de login
+        await supabase.auth.signOut();
+        Alert.alert("Conta apagada com sucesso!");
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Erro ao tentar apagar conta:", error);
+      Alert.alert("Erro ao tentar apagar conta", error.message);
+    }
+  };
 
   useEffect(() => {
     fetchUser();
@@ -240,6 +261,7 @@ export default function Profile() {
         />
         <TouchableOpacity
           style={styles.deleteButton}
+          onPress={handleDeleteAccount}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
@@ -361,11 +383,15 @@ const styles = StyleSheet.create({
     height: 40,
     width: "35%",
     height: 50,
+    backgroundColor: "#ff4d4f",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center", 
+    marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-
+    fontSize: 18,
+    fontWeight:"bold",
+  }
 });
