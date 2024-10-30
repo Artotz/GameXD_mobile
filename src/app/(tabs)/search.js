@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-// import { StatusBar } from "expo-status-bar";
+//import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
+import Header from "../../components/Header";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,8 +46,10 @@ export default function Search() {
   };
 
   useEffect(() => {
-    if (searchQuery) setIsLoading(true);
+    // Se delaySearchQuery não mudar, o outro useEffect na será chamado
+    if (searchQuery && searchQuery != delaySearchQuery) setIsLoading(true);
     else setIsLoading(false);
+
     setDidFetchFail(false);
 
     const handler = setTimeout(() => {
@@ -76,19 +79,19 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/_Logo_.png')} style={{ width: 30, height: 22 }} />
-          <Text style={styles.textGame}>GameXD</Text>
-      </View>
+      <Header />
+
       <Text style={styles.title}>Busca</Text>
+      <View style={styles.underline} />
 
       <TextInput
         testID="SearchInput"
         style={{
           display: "flex",
           width: "90%",
-          height: 40,
-          paddingHorizontal: 16,
+          paddingHorizontal: 20,
+          paddingVertical: 8,
+          fontSize: 16,
           fontWeight: 500,
           backgroundColor: "#373545",
           color: "white",
@@ -99,7 +102,6 @@ export default function Search() {
         value={searchQuery}
         onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
-      <View style={styles.underline} />
       {didFetchFail ? (
         <View
           testID="FailedToFetch"
@@ -157,27 +159,9 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1C1A2B",
     alignItems: "center",
-    justifyContent: "center",
     paddingTop: 30,
     gap: 8,
   },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%", 
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: -30,
-    opacity: 0.7,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: "Orbitron",
-  },
-
   title: {
     fontSize: 40,
     fontWeight: "bold",

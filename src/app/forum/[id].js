@@ -1,4 +1,4 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link,router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Pressable,
 } from "react-native";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function ForumInfo() {
@@ -48,9 +49,11 @@ export default function ForumInfo() {
       if (!response.ok) throw new Error("Network response was not ok");
       const result = await response.json();
       setComments(result);
+      setIsLoading(false);
       console.log(result);
     } catch (error) {
       console.error("Erro ao recuperar dados dos comentários:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -60,6 +63,8 @@ export default function ForumInfo() {
   }, []);
 
   const postNewComment = async () => {
+    if (commentBody == "") return;
+
     try {
       const response = await fetch("http://127.0.0.1:3000/forums/new-comment", {
         method: "POST",
@@ -82,36 +87,6 @@ export default function ForumInfo() {
     }
   };
 
-  const recentReviews = [
-    {
-      id: "1",
-      profiles: {
-        username: "ricardinn1",
-        avatar_url:
-          "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-      },
-      review_body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-    {
-      id: "2",
-      profiles: {
-        username: "ricardinn2",
-        avatar_url:
-          "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-      },
-      review_body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-    {
-      id: "3",
-      profiles: {
-        username: "ricardinn3",
-        avatar_url:
-          "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-      },
-      review_body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tincidunt pharetra elit a maximus. Nulla at erat tincidunt, ultrices sapien sollicitudin, lacinia lacus. Integer at laoreet ante, non facilisis nunc. Nam accumsan venenatis enim eget lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam metus sem, laoreet sit amet dolor in, rhoncus volutpat mi. Sed mi libero, tincidunt ac arcu non, iaculis rutrum orci.`,
-    },
-  ];
-
   const renderReviewItem = ({ item }) => (
     <View
       style={{
@@ -125,9 +100,13 @@ export default function ForumInfo() {
         marginBottom: 20,
       }}
     >
-      <Image
+      {/* <Image
         style={styles.profilePhoto}
         source={{ uri: item.profiles.avatar_url }}
+      /> */}
+      <ProfilePhotoLink
+        avatarURL={item.profiles.avatar_url}
+        onPress={() => router.push(`../profile/${item.profiles.id}`)}
       />
       <View
         style={{

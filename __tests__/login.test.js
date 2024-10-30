@@ -7,10 +7,12 @@ import {
   fireEvent,
   userEvent,
 } from "@testing-library/react-native";
-import LoginScreen from "../src/app/login.js";
+import LoginScreen from "../src/app/(account)/login.js";
 import fetchMock from "jest-fetch-mock";
 
-import { supabase } from "../src/app/db/supabase.js";
+jest.mock("../src/components/Header.js", () => () => <></>);
+
+import { supabase } from "../src/db/supabase.js";
 
 import { Alert } from "react-native";
 

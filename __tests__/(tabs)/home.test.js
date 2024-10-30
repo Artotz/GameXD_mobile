@@ -3,6 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react-native";
 import Home from "../../src/app/(tabs)/home.js";
 import fetchMock from "jest-fetch-mock";
 
+jest.mock("../../src/components/Header.js", () => () => <></>);
+
 jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
 }));

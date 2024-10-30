@@ -15,6 +15,8 @@ import {
   Modal,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Header from "../../components/Header";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 
 export default function Forum() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -49,6 +51,8 @@ export default function Forum() {
   }, []);
 
   const postNewThread = async () => {
+    if (threadTitle == "" || threadBody == "") return;
+
     try {
       const response = await fetch("http://127.0.0.1:3000/forums/new-forum", {
         method: "POST",
@@ -93,17 +97,23 @@ export default function Forum() {
           flexDirection: "row",
           width: 400,
           alignItems: "center",
+          justifyContent: "flex-start",
           borderBottomColor: "#AB72CE",
           borderWidth: 0.9,
           padding: 20,
+          paddingLeft: 50,
           gap: 50,
+          overflow: "clip",
         }}
       >
-        
-        <Image
+        <ProfilePhotoLink
+          avatarURL={item.profiles.avatar_url}
+          onPress={() => router.push(`../profile/${item.profiles.id}`)}
+        />
+        {/* <Image
           style={styles.profilePhoto}
           source={{ uri: item.profiles.avatar_url }}
-        />
+        /> */}
         <View>
           <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
           <Text style={styles.forumTitle}>{item.title}</Text>
@@ -113,95 +123,85 @@ export default function Forum() {
     </Pressable>
   );
 
-  // Fetch State Management
-  if (didFetchFail) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="FailedToFetch"
-      >
-        <FontAwesome size={28} name="exclamation-triangle" color="white" />
-        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
-      </View>
-    );
-  } else if (isLoading) {
-    return (
-      <View
-        style={{
-          height: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#1C1A2B",
-        }}
-        testID="ActivityIndicator"
-      >
-        <ActivityIndicator></ActivityIndicator>
-      </View>
-    );
-  }
-
   return (
-    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
-      <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+    <View style={styles.container}>
+      <Header />
 
+      <View
+        style={{
+          display: "flex",
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 24,
+        }}
+      >
         <View
           style={{
             display: "flex",
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 24,
+            width: 28,
+          }}
+        ></View>
+        <Text style={styles.title}>Fórum</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column-reverse",
+            paddingBottom: 8,
           }}
         >
-          <View
-            style={{
-              display: "flex",
-              width: 28,
-            }}
-          ></View>
-          <Text style={styles.title}>Fórum</Text>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column-reverse",
-              paddingBottom: 8,
-            }}
-          >
-            <FontAwesome
-              size={28}
-              name="plus-circle"
-              color="white"
-              onPress={() => setIsModalVisible(true)}
-            />
-          </View>
+          <FontAwesome
+            size={28}
+            name="plus-circle"
+            color="white"
+            onPress={() => setIsModalVisible(true)}
+          />
         </View>
-        <View style={styles.underline} />
-
-        <FlatList
-          testID="FlatList"
-          data={threads}
-          renderItem={renderReviewItem}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "90%", gap: 4, marginTop: 20 }}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
       </View>
+      <View style={styles.underline} />
+      {didFetchFail ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        </View>
+      ) : isLoading ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <ActivityIndicator></ActivityIndicator>
+        </View>
+      ) : (
+        <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
+          <FlatList
+            data={threads}
+            renderItem={renderReviewItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            style={{
+              display: "flex",
+              width: "90%",
+              gap: 4,
+              marginTop: 20,
+              marginBottom: 60,
+            }}
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+        </ScrollView>
+      )}
 
       <Modal visible={isModalVisible} animationType="none" transparent={true}>
         <View
@@ -352,7 +352,7 @@ export default function Forum() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -360,26 +360,11 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     backgroundColor: "#1C1A2B",
+    height: "100%",
     alignItems: "center",
-    justifyContent: "flex-start",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%", 
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center", 
-    marginBottom: 30,
-    marginTop: -30,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: 'Orbitron',
   },
   title: {
     fontSize: 40,
@@ -407,7 +392,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     width: 70,
     marginTop: 5,
-    color: "white",
+    // color: "white",
   },
   buttonText: {
     color: "#fff",
@@ -433,6 +418,7 @@ const styles = StyleSheet.create({
   },
   reviewUsername: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
@@ -441,11 +427,13 @@ const styles = StyleSheet.create({
   },
   forumTitle: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 14,
     color: "white",
     marginRight: 20,
     flexShrink: 1,
     flexWrap: "wrap",
-    maxWidth: "70%",
+    width: "100%",
+    overflow: "clip",
   },
 });

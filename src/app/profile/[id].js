@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,12 +16,15 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
-import { supabase } from "../db/supabase";
+import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
+import Header from "../../components/Header";
 
-export default function Profile() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
+export default function ProfileInfo() {
+  // const { user } = useAuth();
+
+  const { id } = useLocalSearchParams();
+  const [profile, setProfile] = useState({});
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -35,17 +38,17 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-
-      const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-
-      setProfile(data)
-
-      setIsLoading(false);
+      if (data) {
+        setProfile(data);
+        setIsLoading(false);
+      } else setDidFetchFail(true);
+      console.log("data ", data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
       setDidFetchFail(true);
@@ -54,9 +57,7 @@ export default function Profile() {
 
   const fetchFavorites = async (data) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${user.id}`
-      );
+      const response = await fetch(`http://127.0.0.1:3000/favorites/${id}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -72,7 +73,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -85,14 +86,20 @@ export default function Profile() {
       console.error("Erro ao recuperar dados:", error);
     }
   };
-  
+
+  useEffect(() => {
+    fetchUser();
+    fetchFavorites();
+    fetchUserReviews();
+  }, []);
+
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
-        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .from("profiles") // A tabela que armazena os perfis dos usuários
         .delete()
-        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
-  
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
+
       if (error) {
         console.error("Erro ao apagar conta:", error);
         Alert.alert("Erro ao apagar conta", error.message);
@@ -107,12 +114,6 @@ export default function Profile() {
       Alert.alert("Erro ao tentar apagar conta", error.message);
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-    fetchFavorites();
-    fetchUserReviews()
-  }, []);
 
   const renderGameItem = ({ item }) => (
     <View testID={"FavoritesFlatListItem"} style={{ marginHorizontal: 4 }}>
@@ -205,13 +206,8 @@ export default function Profile() {
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+        <Header />
+
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
@@ -222,9 +218,10 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
+              {gamesTotal}{" "}
+              {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
               {"\n"}
-              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? "Análise" : "Análises"}
             </Text>
           </View>
         </View>
@@ -261,14 +258,14 @@ export default function Profile() {
           //   alignItems: "center",
           // }}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
+          // onPress={handleDeleteAccount}
           style={styles.deleteButton}
           onPress={handleDeleteAccount}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
-    
     </ScrollView>
   );
 }
@@ -282,22 +279,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%",
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: -30,
-    opacity: 0.7,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: "Orbitron",
   },
   sectionTitle: {
     fontSize: 20,
@@ -383,17 +364,15 @@ const styles = StyleSheet.create({
   deleteButton: {
     width: "30%",
     height: 40,
-    width: "35%",
-    height: 50,
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
     marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
-    fontSize: 18,
-    fontWeight:"bold",
-  }
+    fontSize: 12,
+    fontWeight: "bold",
+  },
 });

@@ -1,4 +1,4 @@
-import { Link,useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
@@ -12,14 +12,18 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useForm, Controller } from "react-hook-form";
-import { supabase } from "../db/supabase.js";
+import { supabase } from "../../db/supabase.js";
 
-const logo = require("../../../assets/logo.png");
+import logo from "../../../assets/logo.png";
 
 export default function SignUp() {
-
   const router = useRouter(); // para navegação após cadastro
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm(); // Correção aqui: está chamando corretamente o useForm
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm(); // Correção aqui: está chamando corretamente o useForm
 
   const onSubmit = async (e) => {
     const { email, username, password } = e;
@@ -40,11 +44,12 @@ export default function SignUp() {
         return;
       }
 
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { username } },
-      });
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { username } },
+        });
 
       if (signUpError) {
         console.log(signUpError);
@@ -55,7 +60,8 @@ export default function SignUp() {
           .update([
             {
               username,
-              avatar_url: "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
+              avatar_url:
+                "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
             },
           ])
           .eq("id", signUpData?.user?.id);
@@ -84,25 +90,27 @@ export default function SignUp() {
         <Controller
           control={control}
           name="username"
-          rules={{ required: "Nome de usuário obrigatório."}}
-          render={({field: { onChange, value }}) => (
+          rules={{ required: "Nome de usuário obrigatório." }}
+          render={({ field: { onChange, value } }) => (
             <TextInput
-             style={styles.input}
-             placeholder="Nome"
-             placeholderTextColor="#ccc"
-             keyboardType="default"
-             autoCapitalize="none"
-             value={value}
-             onChangeText={onChange}
-          />
+              style={styles.input}
+              placeholder="Nome"
+              placeholderTextColor="#ccc"
+              keyboardType="default"
+              autoCapitalize="none"
+              value={value}
+              onChangeText={onChange}
+            />
           )}
         />
-        {errors.username && <Text style={styles.error}>{errors.username.message}</Text> }
+        {errors.username && (
+          <Text style={styles.error}>{errors.username.message}</Text>
+        )}
       </View>
 
       <View style={styles.inputContainer}>
         <Icon name="envelope" size={20} color="#ccc" style={styles.icon} />
-        <Controller 
+        <Controller
           control={control}
           name="email"
           rules={{ required: "Email é obrigatório." }}
@@ -118,7 +126,9 @@ export default function SignUp() {
             />
           )}
         />
-        {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+        {errors.email && (
+          <Text style={styles.error}>{errors.email.message}</Text>
+        )}
       </View>
 
       <View style={styles.inputContainer}>
@@ -139,7 +149,9 @@ export default function SignUp() {
             />
           )}
         />
-        {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+        {errors.password && (
+          <Text style={styles.error}>{errors.password.message}</Text>
+        )}
       </View>
       <View style={styles.inputContainer}>
         <Icon name="lock" size={20} color="#ccc" style={styles.icon} />
@@ -152,7 +164,10 @@ export default function SignUp() {
         />
       </View>
       <Link href="" asChild>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit(onSubmit)}
+        >
           <Text style={styles.buttonText}>Criar Conta</Text>
         </TouchableOpacity>
       </Link>

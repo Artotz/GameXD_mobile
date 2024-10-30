@@ -12,9 +12,9 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
-import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
+import { supabase } from "../../db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
 
-const logo = require("../../assets/logo.png");
+import logo from "../../../assets/logo.png";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -84,7 +84,7 @@ export default function LoginScreen() {
           trackColor={{ false: "#767577", true: "#AB72CE" }}
           thumbColor={rememberAccount ? "#fff" : "#f4f3f4"}
         />
-        <Link href="forgot">
+        <Link href="forgotPassword">
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
         </Link>
       </View>

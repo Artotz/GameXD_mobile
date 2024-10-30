@@ -3,6 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react-native";
 import ForumInfo from "../../src/app/forum/[id].js";
 import fetchMock from "jest-fetch-mock";
 
+jest.mock("../../src/components/Header.js", () => () => <></>);
+
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
   useLocalSearchParams: jest.fn(() => 1),
