@@ -72,7 +72,8 @@ export default function EditProfile() {
       }
 
       // return data;
-      router.push("/profile");
+      // router.push(`../profile/${user.id}`);
+      router.push(`../settings`);
     } catch (error) {
       console.error("Erro ao atualizar a avaliação:", error);
       throw error;
@@ -108,36 +109,6 @@ export default function EditProfile() {
       </View>
     );
   }
-
-  const updateUser = async () => {
-    try {
-      // 🤔
-      const response = await fetch("http://127.0.0.1:3000/forums/new-forum", {
-        method: "POST", // 🤔
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // 🤔
-        body: JSON.stringify({
-          user_id: userId,
-          title: threadTitle,
-          description: threadBody,
-        }),
-        // 🤔
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      // 🤔
-      fetchThreads();
-      setIsModalVisible(false);
-      setThreadTitle("");
-      setThreadBody("");
-    } catch (error) {
-      console.error("Erro ao recuperar dados:", error);
-    }
-  };
 
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>

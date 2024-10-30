@@ -51,6 +51,8 @@ export default function Forum() {
   }, []);
 
   const postNewThread = async () => {
+    if (threadTitle == "" || threadBody == "") return;
+
     try {
       const response = await fetch("http://127.0.0.1:3000/forums/new-forum", {
         method: "POST",

@@ -22,7 +22,7 @@ import { useAuth } from "../../hook/AuthContext";
 export default function GameInfo() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  // const { user } = useAuth();
+  const { user } = useAuth();
   // const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
   const [gameInfo, setGameInfo] = useState({});
@@ -118,7 +118,7 @@ export default function GameInfo() {
     if (!isFavorite) {
       try {
         const response = await fetch(
-          "http://10.0.2.2:3000/favorites/send-favorite",
+          "http://127.0.0.1:3000/favorites/send-favorite",
           {
             method: "POST",
             headers: {
@@ -143,7 +143,7 @@ export default function GameInfo() {
     } else {
       try {
         const response = await fetch(
-          `http://10.0.2.2:3000/favorites/delete-favorite/${id}/${user.id}`,
+          `http://127.0.0.1:3000/favorites/delete-favorite/${id}/${user.id}`,
           {
             method: "DELETE",
             headers: {
@@ -158,7 +158,6 @@ export default function GameInfo() {
         }
 
         const result = await response.json();
-        console.log("Unfavorite", result);
         setIsFavorite(false);
       } catch (error) {
         console.error("Erro ao recuperar dados de favorito:", error);
@@ -177,7 +176,7 @@ export default function GameInfo() {
           },
           body: JSON.stringify({
             id: id,
-            user_id: userId,
+            user_id: user.id,
             review_body: reviewBody,
             star_rating: rating,
           }),
@@ -186,6 +185,7 @@ export default function GameInfo() {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      checkUserAlreadyReviewed();
       fetchGameReviews();
       setIsModalVisible(false);
     } catch (error) {
@@ -196,7 +196,7 @@ export default function GameInfo() {
   const updateReview = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:3000/reviews/send-review",
+        "http://127.0.0.1:3000/reviews/update-review",
         {
           method: "PUT",
           headers: {
@@ -204,7 +204,7 @@ export default function GameInfo() {
           },
           body: JSON.stringify({
             id: id,
-            user_id: userId,
+            user_id: user.id,
             review_body: reviewBody,
             star_rating: rating,
           }),
@@ -258,16 +258,18 @@ export default function GameInfo() {
           }}
         >
           <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-          <FontAwesome
-            size={16}
-            name="edit"
-            color="white"
-            onPress={() => {
-              setRating(item.star_rating);
-              setReviewBody(item.review_body);
-              setIsModalVisible(2);
-            }}
-          />
+          {item.profiles.id == user.id && (
+            <FontAwesome
+              size={16}
+              name="edit"
+              color="white"
+              onPress={() => {
+                setRating(item.star_rating);
+                setReviewBody(item.review_body);
+                setIsModalVisible(2);
+              }}
+            />
+          )}
         </View>
         <View
           style={{

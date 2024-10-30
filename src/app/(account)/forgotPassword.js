@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
-import { supabase } from "../db/supabase";
+import { supabase } from "../../db/supabase";
 import Footer from "../../components/footer.js";
 
 export default function ForgotPassword() {
