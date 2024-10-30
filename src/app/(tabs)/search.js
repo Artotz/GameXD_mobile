@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -10,11 +10,9 @@ import {
   Image,
   FlatList,
   ScrollView,
-
   ActivityIndicator,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Icon from "react-native-vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 
 export default function Search() {
@@ -66,37 +64,8 @@ export default function Search() {
     }
   }, [delaySearchQuery]);
 
-  // Dados de exemplo para cada seção
-  // const recentGames = [
-  //   { id: "1", title: "Game Long Name 1" },
-  //   { id: "2", title: "Game 2" },
-  //   { id: "3", title: "Game 3" },
-  //   { id: "4", title: "Game 4" },
-  //   { id: "5", title: "Game 5" },
-  //   { id: "6", title: "Game 6" },
-  //   { id: "7", title: "Game 7" },
-  //   { id: "8", title: "Game 8" },
-  //   { id: "9", title: "Game 9" },
-  //   { id: "10", title: "Game 10" },
-  //   { id: "11", title: "Game 11" },
-  //   { id: "12", title: "Game 12" },
-  //   { id: "13", title: "Game 13" },
-  //   { id: "14", title: "Game 14" },
-  //   { id: "15", title: "Game 15" },
-  //   { id: "16", title: "Game 16" },
-  //   { id: "17", title: "Game 17" },
-  //   { id: "18", title: "Game 18" },
-  //   { id: "19", title: "Game 19" },
-  //   { id: "20", title: "Game 20" },
-  //   { id: "21", title: "Game 21" },
-  //   { id: "22", title: "Game 22" },
-  //   { id: "23", title: "Game 23" },
-  //   { id: "24", title: "Game 24" },
-  //   { id: "25", title: "Game 25" },
-  // ];
-
   const renderGameItem = ({ item }) => (
-    <View style={{ margin: 4 }}>
+    <View testID="FlatListItem" style={{ margin: 4 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -108,12 +77,16 @@ export default function Search() {
   return (
     <View style={styles.container}>
       <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
-          <Text style={styles.textGame}>GameXD</Text>
+        <Image
+          source={require("../../../assets/Union.png")}
+          style={{ width: 30, height: 22 }}
+        />
+        <Text style={styles.textGame}>GameXD</Text>
       </View>
       <Text style={styles.title}>Busca</Text>
 
       <TextInput
+        testID="SearchInput"
         style={{
           display: "flex",
           width: "90%",
@@ -126,13 +99,13 @@ export default function Search() {
           borderRadius: 999,
           outline: "none",
         }}
-
         value={searchQuery}
         onChangeText={(t) => setSearchQuery(t)}
       ></TextInput>
       <View style={styles.underline} />
       {didFetchFail ? (
         <View
+          testID="FailedToFetch"
           style={{
             marginTop: 16,
             alignItems: "center",
@@ -144,6 +117,7 @@ export default function Search() {
         </View>
       ) : isLoading ? (
         <View
+          testID="ActivityIndicator"
           style={{
             marginTop: 16,
             alignItems: "center",
@@ -167,6 +141,7 @@ export default function Search() {
           }}
         >
           <FlatList
+            testID="FlatList"
             data={recentGames}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -191,10 +166,10 @@ const styles = StyleSheet.create({
   },
   sectionLogo: {
     backgroundColor: "#E1E1E1",
-    width: "100%", 
+    width: "100%",
     padding: 10,
     flexDirection: "row",
-    alignItems: "center", 
+    alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
   },
@@ -202,7 +177,7 @@ const styles = StyleSheet.create({
     color: "#8B5AA8",
     marginLeft: 10,
     fontSize: 20,
-    fontFamily: 'Orbitron',
+    fontFamily: "Orbitron",
   },
 
   title: {

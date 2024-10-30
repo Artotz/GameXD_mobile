@@ -13,7 +13,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
@@ -82,7 +81,6 @@ export default function Profile() {
     }
   };
 
-
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
@@ -110,7 +108,7 @@ export default function Profile() {
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View style={{ marginHorizontal: 4 }}>
+    <View testID={"FavoritesFlatListItem"} style={{ marginHorizontal: 4 }}>
       <GameCard
         title={item.Games.name}
         src={item.Games.header_image}
@@ -121,6 +119,7 @@ export default function Profile() {
 
   const renderReviewItem = ({ item }) => (
     <View
+      testID={"ReviewsFlatListItem"}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -154,21 +153,21 @@ export default function Profile() {
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            {[1, 2, 3, 4, 5].map((i) => (
-              <FontAwesome
-                key={i}
-                name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
-                size={10}
-                color="#FFD700" 
-              />
-            ))}
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <FontAwesome
+              key={i}
+              name={i <= item.star_rating ? "star" : "star-o"} // Ícone preenchido se a nota for igual ou menor que o número da estrela
+              size={10}
+              color="#FFD700"
+            />
+          ))}
+        </View>
 
         <Text style={styles.reviewBody}>{item.review_body}</Text>
       </View>
@@ -209,7 +208,10 @@ export default function Profile() {
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
         <View style={styles.sectionLogo}>
-          <Image source={require('../../../assets/Union.png')} style={{ width: 30, height: 22 }} />
+          <Image
+            source={require("../../../assets/Union.png")}
+            style={{ width: 30, height: 22 }}
+          />
           <Text style={styles.textGame}>GameXD</Text>
         </View>
         <View style={styles.profileInfo}>
@@ -237,8 +239,7 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
-
-            testID="FlatList"
+            testID="FavoritesFlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -251,6 +252,7 @@ export default function Profile() {
         <View style={styles.underline} />
 
         <FlatList
+          testID="ReviewsFlatList"
           data={userReviews}
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
@@ -282,13 +284,13 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  }, 
+  },
   sectionLogo: {
     backgroundColor: "#E1E1E1",
-    width: "100%", 
+    width: "100%",
     padding: 10,
     flexDirection: "row",
-    alignItems: "center", 
+    alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
   },
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     color: "#8B5AA8",
     marginLeft: 10,
     fontSize: 20,
-    fontFamily: 'Orbitron',
+    fontFamily: "Orbitron",
   },
   sectionTitle: {
     fontSize: 20,
