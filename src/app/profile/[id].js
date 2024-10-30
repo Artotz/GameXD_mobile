@@ -14,7 +14,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../../db/supabase";
@@ -115,7 +114,7 @@ export default function ProfileInfo() {
   };
 
   const renderGameItem = ({ item }) => (
-    <View style={{ marginHorizontal: 4 }}>
+    <View testID={"FavoritesFlatListItem"} style={{ marginHorizontal: 4 }}>
       <GameCard
         title={item.Games.name}
         src={item.Games.header_image}
@@ -126,6 +125,7 @@ export default function ProfileInfo() {
 
   const renderReviewItem = ({ item }) => (
     <View
+      testID={"ReviewsFlatListItem"}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -232,7 +232,7 @@ export default function ProfileInfo() {
           style={{ width: "100%" }}
         >
           <FlatList
-            testID="FlatList"
+            testID="FavoritesFlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -245,6 +245,7 @@ export default function ProfileInfo() {
         <View style={styles.underline} />
 
         <FlatList
+          testID="ReviewsFlatList"
           data={userReviews}
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}

@@ -1,5 +1,4 @@
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -301,8 +300,10 @@ export default function GameInfo() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
       </View>
     );
   } else if (isLoading) {
@@ -314,6 +315,7 @@ export default function GameInfo() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="ActivityIndicator"
       >
         <ActivityIndicator></ActivityIndicator>
       </View>
@@ -324,10 +326,10 @@ export default function GameInfo() {
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       {/* Botão de voltar, definir rota ao voltar */}
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Icon name="arrow-left" size={24} color="#fff" />
+        <FontAwesome name="arrow-left" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <View style={styles.container}>
+      <View style={styles.container} testID="GameInfoContainer">
         <Image
           resizeMode="cover"
           style={{

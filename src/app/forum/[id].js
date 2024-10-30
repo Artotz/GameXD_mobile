@@ -1,5 +1,5 @@
-import { Link, router, useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Link,router, useLocalSearchParams } from "expo-router";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -34,8 +34,10 @@ export default function ForumInfo() {
       if (!response.ok) throw new Error("Network response was not ok");
       const result = await response.json();
       setThread(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -131,8 +133,10 @@ export default function ForumInfo() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="FailedToFetch"
       >
         <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        {/* <Text style={styles.sectionTitle}>Falha de Carregamento</Text> */}
       </View>
     );
   } else if (isLoading) {
@@ -144,6 +148,7 @@ export default function ForumInfo() {
           justifyContent: "center",
           backgroundColor: "#1C1A2B",
         }}
+        testID="ActivityIndicator"
       >
         <ActivityIndicator></ActivityIndicator>
       </View>
@@ -152,7 +157,7 @@ export default function ForumInfo() {
 
   return (
     <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
-      <View style={styles.container}>
+      <View style={styles.container} testID="ThreadInfoContainer">
         <Text style={styles.title}>{thread.title}</Text>
         <Text style={styles.sectionTitle}>{thread.description}</Text>
         <View style={styles.underline} />

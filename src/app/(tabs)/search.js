@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+//import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -68,7 +68,7 @@ export default function Search() {
   }, [delaySearchQuery]);
 
   const renderGameItem = ({ item }) => (
-    <View style={{ margin: 4 }}>
+    <View testID="FlatListItem" style={{ margin: 4 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -85,6 +85,7 @@ export default function Search() {
       <View style={styles.underline} />
 
       <TextInput
+        testID="SearchInput"
         style={{
           display: "flex",
           width: "90%",
@@ -103,6 +104,7 @@ export default function Search() {
       ></TextInput>
       {didFetchFail ? (
         <View
+          testID="FailedToFetch"
           style={{
             marginTop: 16,
             alignItems: "center",
@@ -114,6 +116,7 @@ export default function Search() {
         </View>
       ) : isLoading ? (
         <View
+          testID="ActivityIndicator"
           style={{
             marginTop: 16,
             alignItems: "center",
@@ -137,6 +140,7 @@ export default function Search() {
           }}
         >
           <FlatList
+            testID="FlatList"
             data={recentGames}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
