@@ -2,6 +2,7 @@ import { Link, router } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
+  Modal,
   Text,
   TextInput,
   View,
@@ -16,9 +17,11 @@ import {
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
 import { supabase } from "../db/supabase";
+import { useAuth } from "../../hook/AuthContext";
 
 export default function Profile() {
-  const [user, setUser] = useState({});
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -28,17 +31,19 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/profiles`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
-      console.log("users", result);
-      setUser(result[2]);
-      fetchFavorites(result[2]);
-      fetchUserReviews(result[2]);
+
+
+      const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+      setProfile(data)
 
       setIsLoading(false);
     } catch (error) {
@@ -50,7 +55,7 @@ export default function Profile() {
   const fetchFavorites = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${data.id}`
+        `http://127.0.0.1:3000/favorites/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -67,7 +72,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${data.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -80,14 +85,14 @@ export default function Profile() {
       console.error("Erro ao recuperar dados:", error);
     }
   };
-
+  
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
-        .from("profiles") // A tabela que armazena os perfis dos usuários
+        .from('profiles') // A tabela que armazena os perfis dos usuários
         .delete()
-        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
-
+        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
+  
       if (error) {
         console.error("Erro ao apagar conta:", error);
         Alert.alert("Erro ao apagar conta", error.message);
@@ -105,6 +110,8 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUser();
+    fetchFavorites();
+    fetchUserReviews()
   }, []);
 
   const renderGameItem = ({ item }) => (
@@ -123,33 +130,24 @@ export default function Profile() {
       style={{
         display: "flex",
         flexDirection: "row",
-        width: "100%",
-        gap: 12,
-        paddingHorizontal: 24,
-        justifyContent: "flex-start",
         alignItems: "center",
         marginBottom: 20,
       }}
     >
-      {/* <Image
-        style={styles.reviewProfilePhoto}
-        source={{ uri: "../assets/ricardo.png" }}
-      /> */}
       <GameCard
         // title={item.gameTitle}
         src={item.Games.header_image}
-        width={50}
-        height={50}
+        width={60}
+        height={60}
         onPress={() => router.push(`../game/${item.game_id}`)}
       />
       <View
         style={{
           display: "flex",
-          width: 300,
-          overflow: "hidden",
           justifyContent: "center",
-          alignItems: "center",
-          // paddingRight: 24,
+          alignItems: "flex-start",
+          gap: 2,
+          marginLeft: 80,
         }}
       >
         <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
@@ -209,7 +207,7 @@ export default function Profile() {
       <View style={styles.container}>
         <View style={styles.sectionLogo}>
           <Image
-            source={require("../../../assets/Union.png")}
+            source={require("../../../assets/_Logo_.png")}
             style={{ width: 30, height: 22 }}
           />
           <Text style={styles.textGame}>GameXD</Text>
@@ -218,15 +216,15 @@ export default function Profile() {
           <View style={styles.profileInfoLeft}>
             <Image
               style={styles.profilePhoto}
-              source={{ uri: user.avatar_url }}
+              source={{ uri: profile.avatar_url }}
             />
           </View>
           <View style={styles.profileInfoRight}>
-            <Text style={styles.profileTitle}>{user.username}</Text>
+            <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} jogos
+              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
               {"\n"}
-              {reviewsTotal} análises
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
             </Text>
           </View>
         </View>
@@ -257,13 +255,12 @@ export default function Profile() {
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "100%", gap: 12 }}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          // style={{ display: "flex", width: "100%", gap: 12 }}
+          // contentContainerStyle={{
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          // }}
         />
-
         <TouchableOpacity
           style={styles.deleteButton}
           onPress={handleDeleteAccount}
@@ -271,6 +268,7 @@ export default function Profile() {
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
         </TouchableOpacity>
       </View>
+    
     </ScrollView>
   );
 }
@@ -286,16 +284,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionLogo: {
-    backgroundColor: "#E1E1E1",
+    backgroundColor: "#AB72CE",
     width: "100%",
     padding: 10,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 30,
     marginTop: -30,
+    opacity: 0.7,
   },
   textGame: {
-    color: "#8B5AA8",
+    color: "#F0ECF0",
     marginLeft: 10,
     fontSize: 20,
     fontFamily: "Orbitron",
@@ -310,8 +309,9 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    width: "100%",
+    width: "90%",
     backgroundColor: "#AB72CE",
+    marginBottom: 20,
   },
   button: {
     width: "90%",
@@ -328,34 +328,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileInfo: {
-    flexDirection: "column",
-    width: "100%",
-    backgroundColor: "#1C1A2B",
+    flexDirection: "row",
     marginTop: 15,
     alignItems: "center",
     justifyContent: "center",
   },
   profileInfoLeft: {
-    flex: 1,
     flexDirection: "row",
     width: "100%",
-    gap: 8,
     backgroundColor: "#1C1A2B",
     alignItems: "center",
     justifyContent: "center",
     padding: 8,
   },
   profileInfoRight: {
-    flex: 2,
     width: "100%",
     gap: 8,
-    backgroundColor: "#1C1A2B",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
+    alignItems: "start",
+    justifyContent: "start",
   },
   profileTitle: {
-    fontSize: 16,
+    fontSize: 30,
     color: "white",
   },
   profileText: {
@@ -366,12 +359,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "#fff",
+    borderRadius: 50,
   },
   reviewProfilePhoto: {
     width: 100,
     height: 100,
     backgroundColor: "#fff",
-    borderRadius: 999,
+    borderRadius: 50,
   },
   reviewUsername: {
     display: "flex",
@@ -386,19 +380,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
-
   deleteButton: {
-    width: "90%",
+    width: "30%",
+    height: 40,
+    width: "35%",
     height: 50,
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center", 
     marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
-  },
+    fontWeight:"bold",
+  }
 });

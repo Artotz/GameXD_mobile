@@ -3,10 +3,41 @@ import { StatusBar } from "expo-status-bar";
 import { Text, TextInput, View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
+import { supabase } from "../db/supabase";
+import Footer from "../../components/footer.js";
 
 export default function EmailScreen() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
   const router = useRouter();
+
+
+  const handlePasswordReset = async () => {
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+
+    if (error) {
+      if (error.status === 400) {
+        console.log("Erro", "E-mail não registrado. Verifique e tente novamente.");
+        setLoading(false)
+      } else {
+        console.log("Erro", error.message);
+        setLoading(false)
+      }
+    } else {
+      console.log(
+        "Sucesso",
+        "Se o e-mail estiver registrado, um link de redefinição de senha será enviado."
+      );
+      setShowFooter(true); 
+      setLoading(false)
+      setTimeout(() => {
+        setShowFooter(false);
+      }, 3000);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -35,11 +66,18 @@ export default function EmailScreen() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Enviar</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handlePasswordReset}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>{loading ? "Enviando..." : "Enviar"}</Text>
       </TouchableOpacity>
 
       <StatusBar style="auto" />
+
+      {showFooter && <Footer />}
+
     </View>
   );
 }
