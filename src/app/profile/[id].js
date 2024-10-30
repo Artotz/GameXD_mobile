@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -21,8 +21,10 @@ import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
 import Header from "../../components/Header";
 
-export default function Profile() {
-  const { user } = useAuth();
+export default function ProfileInfo() {
+  // const { user } = useAuth();
+
+  const { id } = useLocalSearchParams();
   const [profile, setProfile] = useState({});
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
@@ -40,7 +42,7 @@ export default function Profile() {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", id)
         .single();
 
       setProfile(data);
@@ -54,9 +56,7 @@ export default function Profile() {
 
   const fetchFavorites = async (data) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${user.id}`
-      );
+      const response = await fetch(`http://127.0.0.1:3000/favorites/${id}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -72,7 +72,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -255,12 +255,12 @@ export default function Profile() {
           //   alignItems: "center",
           // }}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           // onPress={handleDeleteAccount}
           style={styles.deleteButton}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </ScrollView>
   );

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../db/supabase"; // Certifique-se que o supabase está configurado corretamente
+import { ScrollView, Button, Text, View, Image } from "react-native";
 
 const AuthContext = createContext();
 
@@ -27,13 +28,48 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => {
-      authListener?.unsubscribe(); // Limpa o listener ao desmontar
+      authListener?.subscription.unsubscribe(); // Limpa o listener ao desmontar
     };
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
       {children}
+      {/* {user == null || children}
+      {user != null || (
+        <ScrollView
+          style={{
+            backgroundColor: "#1C1A2B",
+          }}
+          contentContainerStyle={{
+            height: "100%",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View>
+              <Image source={require("../../assets/logo.png")} />
+            </View>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                color: "white",
+                textAlign: "center",
+                marginVertical: 40,
+              }}
+            >
+              Você precisa estar logado!
+            </Text>
+          </View>
+        </ScrollView>
+      )} */}
     </AuthContext.Provider>
   );
 };

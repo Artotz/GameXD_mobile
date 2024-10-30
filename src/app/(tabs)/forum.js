@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Header from "../../components/Header";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 
 export default function Forum() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -93,16 +94,23 @@ export default function Forum() {
           flexDirection: "row",
           width: 400,
           alignItems: "center",
+          justifyContent: "flex-start",
           borderBottomColor: "#AB72CE",
           borderWidth: 0.9,
           padding: 20,
+          paddingLeft: 50,
           gap: 50,
+          overflow: "clip",
         }}
       >
-        <Image
+        <ProfilePhotoLink
+          avatarURL={item.profiles.avatar_url}
+          onPress={() => router.push(`../profile/${item.profiles.id}`)}
+        />
+        {/* <Image
           style={styles.profilePhoto}
           source={{ uri: item.profiles.avatar_url }}
-        />
+        /> */}
         <View>
           <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
           <Text style={styles.forumTitle}>{item.title}</Text>
@@ -177,7 +185,13 @@ export default function Forum() {
             renderItem={renderReviewItem}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
-            style={{ display: "flex", width: "90%", gap: 4, marginTop: 20 }}
+            style={{
+              display: "flex",
+              width: "90%",
+              gap: 4,
+              marginTop: 20,
+              marginBottom: 60,
+            }}
             contentContainerStyle={{
               justifyContent: "center",
               alignItems: "center",
@@ -375,7 +389,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     width: 70,
     marginTop: 5,
-    color: "white",
+    // color: "white",
   },
   buttonText: {
     color: "#fff",
@@ -401,6 +415,7 @@ const styles = StyleSheet.create({
   },
   reviewUsername: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
@@ -409,11 +424,13 @@ const styles = StyleSheet.create({
   },
   forumTitle: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 14,
     color: "white",
     marginRight: 20,
     flexShrink: 1,
     flexWrap: "wrap",
-    maxWidth: "70%",
+    width: "100%",
+    overflow: "clip",
   },
 });

@@ -11,9 +11,11 @@ import {
   FlatList,
   ScrollView,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 
 export default function GameInfo() {
   const { id } = useLocalSearchParams();
@@ -70,9 +72,9 @@ export default function GameInfo() {
         marginBottom: 20,
       }}
     >
-      <Image
-        style={styles.profilePhoto}
-        source={{ uri: item.profiles.avatar_url }}
+      <ProfilePhotoLink
+        avatarURL={item.profiles.avatar_url}
+        onPress={() => router.push(`../profile/${item.profiles.id}`)}
       />
       <View
         style={{

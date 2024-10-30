@@ -1,4 +1,4 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Pressable,
 } from "react-native";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function ForumInfo() {
@@ -95,9 +96,13 @@ export default function ForumInfo() {
         marginBottom: 20,
       }}
     >
-      <Image
+      {/* <Image
         style={styles.profilePhoto}
         source={{ uri: item.profiles.avatar_url }}
+      /> */}
+      <ProfilePhotoLink
+        avatarURL={item.profiles.avatar_url}
+        onPress={() => router.push(`../profile/${item.profiles.id}`)}
       />
       <View
         style={{

@@ -18,6 +18,7 @@ import Header from "../../components/Header";
 
 export default function Home() {
   const [recentGames, setRecentGames] = useState([]);
+  const [randomGames, setRandomGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
 
@@ -40,8 +41,37 @@ export default function Home() {
     }
   };
 
+  const fetchRandomGames = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3000/games/`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+
+      const randomArray = [];
+      // console.log("Games", result);
+
+      for (let i = 0; i < 10; i++) {
+        // With Math.floor(Math.random() * (max - min +1)) + min you have a perfectly even distribution.
+        randomArray.push(
+          result.splice(Math.floor(Math.random() * result.length), 1)[0]
+        );
+      }
+
+      //printing the result
+      // console.log("Games", result);
+      console.log("Games", randomArray);
+
+      setRandomGames(randomArray);
+    } catch (error) {
+      // console.error("Erro ao recuperar dados:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRecentGames();
+    fetchRandomGames();
   }, []);
 
   const renderGameItem = ({ item }) => (
@@ -166,7 +196,7 @@ export default function Home() {
             style={styles.scrollIndicator}
           >
             <FlatList
-              data={recentGames}
+              data={randomGames}
               renderItem={renderGameItem}
               keyExtractor={(item) => item.id}
               horizontal
