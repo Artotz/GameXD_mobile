@@ -11,16 +11,18 @@ import {
   Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Footer from "../../components/footerContaErro.js";
 import { useState } from "react";
-import { supabase } from "./db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
+import { supabase } from "../../db/supabase.js"; // Certifique-se de ter a configuração do supabase importada corretamente
 
-const logo = require("../../assets/logo.png");
+import logo from "../../../assets/logo.png";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberAccount, setRememberAccount] = useState(false);
+  const [showFooter, setShowFooter] = useState(false)
   const router = useRouter(); // Para navegar entre telas
 
   const handleSignIn = async () => {
@@ -30,16 +32,31 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     setLoading(false);
 
     if (error) {
-      Alert.alert("Erro", error.message);
-    } else {
-      router.replace("/home");
+      Alert.alert ("Erro", error.message)
+    } else if (data) {
+      const { data: userCheck, error: userError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("email", email)
+      .single()
+
+      if(userError || !userCheck) {
+        Alert.alert("Erro", "Esta conta foi removida")
+        await supabase.auth.signOut()
+        setShowFooter(true)
+        setTimeout (()=> {
+          setShowFooter(false)
+        }, 3000)
+      } else {
+        router.replace("/home")
+      }
     }
   };
 
@@ -84,7 +101,7 @@ export default function LoginScreen() {
           trackColor={{ false: "#767577", true: "#AB72CE" }}
           thumbColor={rememberAccount ? "#fff" : "#f4f3f4"}
         />
-        <Link href="forgot">
+        <Link href="forgotPassword">
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
         </Link>
       </View>
@@ -107,6 +124,8 @@ export default function LoginScreen() {
         </Link>
       </View>
       <StatusBar style="auto" />
+
+      {showFooter && <Footer />}
     </View>
   );
 }

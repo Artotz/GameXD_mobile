@@ -1,11 +1,8 @@
 import { Tabs } from "expo-router";
-import { View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { AuthProvider } from "../../hook/AuthContext";
 
-export default function RootLayout() {
+export default function TabsLayout() {
   return (
-    <AuthProvider>
     <Tabs
       screenOptions={{
         tabBarShowLabel: false,
@@ -37,7 +34,6 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-
         name="forum"
         options={{
           title: "forum",
@@ -47,16 +43,14 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: "profile",
+          title: "settings",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user" color={color} />
+            <FontAwesome size={28} name="cog" color={color} />
           ),
         }}
       />
     </Tabs>
-    </AuthProvider>
-    
   );
 }

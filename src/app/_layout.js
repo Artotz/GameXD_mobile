@@ -1,16 +1,22 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
+import { AuthProvider } from "../hook/AuthContext";
 
-export default function HomeLayout() {
+export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="login" />
-      <Stack.Screen name="(tabs)/profile"/>
-    </Stack>
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(account)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="game/[id]" />
+        <Stack.Screen name="profile/[id]" />
+        <Stack.Screen name="profile/editProfile" />
+        <Stack.Screen name="forum/[id]" />
+      </Stack>
+    </AuthProvider>
   );
 }

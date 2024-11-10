@@ -1,6 +1,12 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react-native";
-import Home from "../../src/app/(tabs)/home.js";
+import {
+  render,
+  screen,
+  act,
+  waitFor,
+  userEvent,
+} from "@testing-library/react-native";
+import Search from "../../src/app/(tabs)/search.js";
 import fetchMock from "jest-fetch-mock";
 
 jest.mock("../../src/components/Header.js", () => () => <></>);
@@ -11,19 +17,35 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@expo/vector-icons/FontAwesome", () => () => <></>);
 
-describe("Home", () => {
+describe("Search", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
 
-  it("1) Mostrar ActivityIndicator enquanto carrega", () => {
-    render(<Home />);
+  it("1) Mostrar ActivityIndicator enquanto carrega", async () => {
+    render(<Search />);
+
+    const searchInput = screen.getByTestId("SearchInput");
+
+    await act(async () => {
+      await userEvent.type(searchInput, "teste");
+    });
 
     expect(screen.getByTestId("ActivityIndicator")).toBeTruthy();
   });
 
+  jest.setTimeout(30000);
+
   it("2) Mostrar FailedToFetch se não carregar", async () => {
-    render(<Home />);
+    render(<Search />);
+
+    const searchInput = screen.getByTestId("SearchInput");
+
+    await act(async () => {
+      await userEvent.type(searchInput, "teste");
+    });
+
+    await new Promise((r) => setTimeout(r, 1000));
 
     await waitFor(() =>
       expect(screen.getByTestId("FailedToFetch")).toBeTruthy()
@@ -39,13 +61,21 @@ describe("Home", () => {
 
     fetchMock.mockResponse(JSON.stringify(mockGames));
 
-    render(<Home />);
+    render(<Search />);
+
+    const searchInput = screen.getByTestId("SearchInput");
+
+    await act(async () => {
+      await userEvent.type(searchInput, "teste");
+    });
+
+    await new Promise((r) => setTimeout(r, 1000));
 
     await waitFor(() => expect(screen.getByTestId("FlatList")).toBeTruthy());
 
     const flatListItems = screen.getAllByTestId("FlatListItem");
 
     // 6 seções iguais em Home
-    expect(flatListItems.length).toBe(mockGames.length * 6);
+    expect(flatListItems.length).toBe(mockGames.length);
   });
 });

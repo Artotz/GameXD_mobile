@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,15 +14,17 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import GameCard from "../../components/GameCard";
-import { supabase } from "../db/supabase";
+import { supabase } from "../../db/supabase";
 import { useAuth } from "../../hook/AuthContext";
+import Header from "../../components/Header";
 
-export default function Profile() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
+export default function ProfileInfo() {
+   const { user } = useAuth();
+
+  const { id } = useLocalSearchParams();
+  const [profile, setProfile] = useState({});
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -36,17 +38,17 @@ export default function Profile() {
 
   const fetchUser = async () => {
     try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-
-      const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-
-      setProfile(data)
-
-      setIsLoading(false);
+      if (data) {
+        setProfile(data);
+        setIsLoading(false);
+      } else setDidFetchFail(true);
+      console.log("data ", data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
       setDidFetchFail(true);
@@ -55,9 +57,7 @@ export default function Profile() {
 
   const fetchFavorites = async (data) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:3000/favorites/${user.id}`
-      );
+      const response = await fetch(`http://127.0.0.1:3000/favorites/${id}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -73,7 +73,7 @@ export default function Profile() {
   const fetchUserReviews = async (data) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/reviews/user-reviews/${user.id}`
+        `http://127.0.0.1:3000/reviews/user-reviews/${id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -111,11 +111,11 @@ export default function Profile() {
   useEffect(() => {
     fetchUser();
     fetchFavorites();
-    fetchUserReviews()
+    fetchUserReviews();
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View style={{ marginHorizontal: 4 }}>
+    <View testID={"FavoritesFlatListItem"} style={{ marginHorizontal: 4 }}>
       <GameCard
         title={item.Games.name}
         src={item.Games.header_image}
@@ -126,6 +126,7 @@ export default function Profile() {
 
   const renderReviewItem = ({ item }) => (
     <View
+      testID={"ReviewsFlatListItem"}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -204,13 +205,8 @@ export default function Profile() {
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+        <Header />
+
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
             <Image
@@ -221,9 +217,10 @@ export default function Profile() {
           <View style={styles.profileInfoRight}>
             <Text style={styles.profileTitle}>{profile.username}</Text>
             <Text style={styles.profileText}>
-              {gamesTotal} {gamesTotal === 0 || 1 ? 'Jogo Favorito' : 'Jogos Favoritos'}
+              {gamesTotal}{" "}
+              {gamesTotal === 0 || 1 ? "Jogo Favorito" : "Jogos Favoritos"}
               {"\n"}
-              {reviewsTotal} {reviewsTotal === 0 || 1 ? 'Análise' : 'Análises'} 
+              {reviewsTotal} {reviewsTotal === 0 || 1 ? "Análise" : "Análises"}
             </Text>
           </View>
         </View>
@@ -236,7 +233,7 @@ export default function Profile() {
           style={{ width: "100%" }}
         >
           <FlatList
-            testID="FlatList"
+            testID="FavoritesFlatList"
             data={userFavorites}
             renderItem={renderGameItem}
             keyExtractor={(item) => item.id}
@@ -249,24 +246,24 @@ export default function Profile() {
         <View style={styles.underline} />
 
         <FlatList
+          testID="ReviewsFlatList"
           data={userReviews}
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          // style={{ display: "flex", width: "100%", gap: 12 }}
-          // contentContainerStyle={{
-          //   justifyContent: "center",
-          //   alignItems: "center",
-          // }}
+           style={{ display: "flex", width: "100%", gap: 12 }}
+           contentContainerStyle={{
+             justifyContent: "center",
+             alignItems: "center",
+           }}
         />
-        <TouchableOpacity
+        { <TouchableOpacity
+           onPress={handleDeleteAccount}
           style={styles.deleteButton}
-          onPress={handleDeleteAccount}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> }
       </View>
-    
     </ScrollView>
   );
 }
@@ -280,22 +277,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%",
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: -30,
-    opacity: 0.7,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: "Orbitron",
   },
   sectionTitle: {
     fontSize: 20,

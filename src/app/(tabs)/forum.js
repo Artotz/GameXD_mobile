@@ -1,5 +1,5 @@
 import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+// import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -15,6 +15,8 @@ import {
   Modal,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Header from "../../components/Header";
+import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 
 export default function Forum() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,6 +27,9 @@ export default function Forum() {
 
   const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [didFetchFail, setDidFetchFail] = useState(false);
+
   const fetchThreads = async () => {
     try {
       const response = await fetch("http://127.0.0.1:3000/forums");
@@ -34,8 +39,10 @@ export default function Forum() {
       const result = await response.json();
       console.log("Threads", result);
       setThreads(result);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
+      setDidFetchFail(true);
     }
   };
 
@@ -44,6 +51,8 @@ export default function Forum() {
   }, []);
 
   const postNewThread = async () => {
+    if (threadTitle == "" || threadBody == "") return;
+
     try {
       const response = await fetch("http://127.0.0.1:3000/forums/new-forum", {
         method: "POST",
@@ -68,119 +77,9 @@ export default function Forum() {
     }
   };
 
-  // const recentReviews = [
-  //   {
-  //     id: "1",
-  //     profiles: {
-  //       username: "ricardinn1",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "2",
-  //     profiles: {
-  //       username: "ricardinn2",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "3",
-  //     profiles: {
-  //       username: "ricardinn3",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "4",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "5",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "6",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "7",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "8",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "9",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "10",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "11",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  //   {
-  //     id: "12",
-  //     profiles: {
-  //       username: "ricardinn4",
-  //       avatar_url:
-  //         "https://i.pinimg.com/736x/ee/79/41/ee7941e54053f388bbc8f4fb043765b6.jpg",
-  //     },
-  //     title: `Lorem ipsum dolor sit amet`,
-  //   },
-  // ];
-
   const renderReviewItem = ({ item }) => (
     <Pressable
+      testID="FlatListItem"
       onPress={() => router.push(`../forum/${item.id}`)}
       style={{
         display: "flex",
@@ -198,17 +97,23 @@ export default function Forum() {
           flexDirection: "row",
           width: 400,
           alignItems: "center",
+          justifyContent: "flex-start",
           borderBottomColor: "#AB72CE",
           borderWidth: 0.9,
           padding: 20,
+          paddingLeft: 50,
           gap: 50,
+          overflow: "clip",
         }}
       >
-        
-        <Image
+        <ProfilePhotoLink
+          avatarURL={item.profiles.avatar_url}
+          onPress={() => router.push(`../profile/${item.profiles.id}`)}
+        />
+        {/* <Image
           style={styles.profilePhoto}
           source={{ uri: item.profiles.avatar_url }}
-        />
+        /> */}
         <View>
           <Text style={styles.reviewUsername}>{item.profiles.username}</Text>
           <Text style={styles.forumTitle}>{item.title}</Text>
@@ -219,61 +124,84 @@ export default function Forum() {
   );
 
   return (
-    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
-      <View style={styles.container}>
-        <View style={styles.sectionLogo}>
-          <Image
-            source={require("../../../assets/_Logo_.png")}
-            style={{ width: 30, height: 22 }}
-          />
-          <Text style={styles.textGame}>GameXD</Text>
-        </View>
+    <View style={styles.container}>
+      <Header />
 
+      <View
+        style={{
+          display: "flex",
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 24,
+        }}
+      >
         <View
           style={{
             display: "flex",
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 24,
+            width: 28,
+          }}
+        ></View>
+        <Text style={styles.title}>Fórum</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column-reverse",
+            paddingBottom: 8,
           }}
         >
-          <View
-            style={{
-              display: "flex",
-              width: 28,
-            }}
-          ></View>
-          <Text style={styles.title}>Fórum</Text>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column-reverse",
-              paddingBottom: 8,
-            }}
-          >
-            <FontAwesome
-              size={28}
-              name="plus-circle"
-              color="white"
-              onPress={() => setIsModalVisible(true)}
-            />
-          </View>
+          <FontAwesome
+            size={28}
+            name="plus-circle"
+            color="white"
+            onPress={() => setIsModalVisible(true)}
+          />
         </View>
-        <View style={styles.underline} />
-
-        <FlatList
-          data={threads}
-          renderItem={renderReviewItem}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          style={{ display: "flex", width: "90%", gap: 4, marginTop: 20 }}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
       </View>
+      <View style={styles.underline} />
+      {didFetchFail ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <FontAwesome size={28} name="exclamation-triangle" color="white" />
+        </View>
+      ) : isLoading ? (
+        <View
+          style={{
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#1C1A2B",
+          }}
+        >
+          <ActivityIndicator></ActivityIndicator>
+        </View>
+      ) : (
+        <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
+          <FlatList
+            data={threads}
+            renderItem={renderReviewItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            style={{
+              display: "flex",
+              width: "90%",
+              gap: 4,
+              marginTop: 20,
+              marginBottom: 60,
+            }}
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+        </ScrollView>
+      )}
 
       <Modal visible={isModalVisible} animationType="none" transparent={true}>
         <View
@@ -424,7 +352,7 @@ export default function Forum() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -432,26 +360,11 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     backgroundColor: "#1C1A2B",
+    height: "100%",
     alignItems: "center",
-    justifyContent: "flex-start",
     paddingVertical: 30,
     marginBottom: 60,
     gap: 8,
-  },
-  sectionLogo: {
-    backgroundColor: "#AB72CE",
-    width: "100%", 
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center", 
-    marginBottom: 30,
-    marginTop: -30,
-  },
-  textGame: {
-    color: "#F0ECF0",
-    marginLeft: 10,
-    fontSize: 20,
-    fontFamily: 'Orbitron',
   },
   title: {
     fontSize: 40,
@@ -479,7 +392,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     width: 70,
     marginTop: 5,
-    color: "white",
+    // color: "white",
   },
   buttonText: {
     color: "#fff",
@@ -505,6 +418,7 @@ const styles = StyleSheet.create({
   },
   reviewUsername: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
@@ -513,11 +427,13 @@ const styles = StyleSheet.create({
   },
   forumTitle: {
     display: "flex",
+    justifyContent: "flex-start",
     fontSize: 14,
     color: "white",
     marginRight: 20,
     flexShrink: 1,
     flexWrap: "wrap",
-    maxWidth: "70%",
+    width: "100%",
+    overflow: "clip",
   },
 });
