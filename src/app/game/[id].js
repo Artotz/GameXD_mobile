@@ -21,7 +21,6 @@ export default function GameInfo() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { user } = useAuth();
-  // const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
 
   const [gameInfo, setGameInfo] = useState({});
   const [gameReviews, setGameReviews] = useState([]);

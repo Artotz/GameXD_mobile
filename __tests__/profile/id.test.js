@@ -2,8 +2,10 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react-native";
 import ProfileInfo from "../../src/app/profile/[id].js";
 import fetchMock from "jest-fetch-mock";
+import { supabase } from "../../src/db/supabase.js";
 
 jest.mock("expo-router", () => ({
+  useRouter: jest.fn(),
   router: { push: jest.fn() },
   useLocalSearchParams: jest.fn(() => 1),
 }));
@@ -11,10 +13,6 @@ jest.mock("expo-router", () => ({
 jest.mock("../../src/components/Header.js", () => () => <></>);
 
 jest.mock("@expo/vector-icons/FontAwesome", () => () => <></>);
-
-jest.mock("../../src/db/supabase.js", () => ({
-  supabase: {},
-}));
 
 describe("Profile", () => {
   beforeEach(() => {
@@ -28,6 +26,16 @@ describe("Profile", () => {
   });
 
   it("2) Mostrar FailedToFetch se não carregar", async () => {
+    jest.spyOn(supabase, "from").mockImplementation(() => ({
+      select: jest.fn().mockImplementation(() => ({
+        eq: jest.fn().mockImplementation(() => ({
+          single: jest.fn().mockImplementation(() => ({
+            data: null,
+          })),
+        })),
+      })),
+    }));
+
     render(<ProfileInfo />);
 
     await waitFor(() =>
@@ -36,6 +44,20 @@ describe("Profile", () => {
   });
 
   it("3) Mostrar items em FlatList ao carregar", async () => {
+    jest.spyOn(supabase, "from").mockImplementation(() => ({
+      select: jest.fn().mockImplementation(() => ({
+        eq: jest.fn().mockImplementation(() => ({
+          single: jest.fn().mockImplementation(() => ({
+            data: JSON.stringify({
+              id: 1,
+              avatar_url: "image1.png",
+              username: "User 1",
+            }),
+          })),
+        })),
+      })),
+    }));
+
     const mockProfiles = [
       { id: 1, avatar_url: "image1.png", username: "User 1" },
       { id: 2, avatar_url: "image2.png", username: "User 2" },

@@ -17,6 +17,7 @@ import {
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Header from "../../components/Header";
 import ProfilePhotoLink from "../../components/ProfilePhotoLink";
+import { useAuth } from "../../hook/AuthContext";
 
 export default function Forum() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,7 +26,7 @@ export default function Forum() {
 
   const [threads, setThreads] = useState([]);
 
-  const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
+  const { user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [didFetchFail, setDidFetchFail] = useState(false);
@@ -60,7 +61,7 @@ export default function Forum() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_id: userId,
+          user_id: user.id,
           title: threadTitle,
           description: threadBody,
         }),
@@ -167,6 +168,7 @@ export default function Forum() {
             justifyContent: "center",
             backgroundColor: "#1C1A2B",
           }}
+          testID="FailedToFetch"
         >
           <FontAwesome size={28} name="exclamation-triangle" color="white" />
         </View>
@@ -178,6 +180,7 @@ export default function Forum() {
             justifyContent: "center",
             backgroundColor: "#1C1A2B",
           }}
+          testID="ActivityIndicator"
         >
           <ActivityIndicator></ActivityIndicator>
         </View>
@@ -199,6 +202,7 @@ export default function Forum() {
               justifyContent: "center",
               alignItems: "center",
             }}
+            testID="FlatList"
           />
         </ScrollView>
       )}

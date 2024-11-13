@@ -1,4 +1,4 @@
-import { Link,router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,10 +15,11 @@ import {
 } from "react-native";
 import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useAuth } from "../../hook/AuthContext";
 
 export default function ForumInfo() {
   const { id } = useLocalSearchParams();
-  const userId = "d2a0f54b-ee89-4584-92e7-dc7f9846fe87";
+  const { user } = useAuth();
 
   const [thread, setThread] = useState([]);
   const [comments, setComments] = useState([]);
@@ -72,7 +73,7 @@ export default function ForumInfo() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_id: userId,
+          user_id: user.id,
           forum_id: id,
           comment: commentBody,
         }),

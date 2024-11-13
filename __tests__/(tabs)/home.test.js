@@ -45,7 +45,9 @@ describe("Home", () => {
 
     const flatListItems = screen.getAllByTestId("FlatListItem");
 
-    // 6 seções iguais em Home
-    expect(flatListItems.length).toBe(mockGames.length * 6);
+    // 2 seções iguais em Home
+    await waitFor(() =>
+      expect(flatListItems.length).toBe(mockGames.length * 2)
+    );
   });
 });

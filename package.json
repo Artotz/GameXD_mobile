@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~3.2.1",
+    "@expo/metro-runtime": "~3.2.3",
     "@supabase/supabase-js": "^2.45.4",
     "@testing-library/react-native": "^12.7.2",
     "expo": "~51.0.26",

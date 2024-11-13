@@ -60,6 +60,7 @@ export default function ProfileInfo() {
         setProfile(data);
         setIsLoading(false);
       } else setDidFetchFail(true);
+
       console.log("data ", data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -76,7 +77,7 @@ export default function ProfileInfo() {
       const result = await response.json();
       setUserFavorites(result);
       setGamesTotal(result.length);
-      console.log("User favorites", result);
+      // console.log("User favorites", result);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
     }
@@ -93,7 +94,7 @@ export default function ProfileInfo() {
       const result = await response.json();
       setUserReviews(result);
       setReviewsTotal(result.length);
-      console.log("user review", result);
+      // console.log("user review", result);
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
     }
