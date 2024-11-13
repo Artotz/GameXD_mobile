@@ -206,7 +206,7 @@ export default function ProfileInfo() {
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <Header />
+        <Header hasBackButton={true} />
 
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>

@@ -1,4 +1,4 @@
-import { Link,router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 // import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Header from "../../components/Header";
 
 export default function ForumInfo() {
   const { id } = useLocalSearchParams();
@@ -156,7 +157,8 @@ export default function ForumInfo() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: "#1C1A2B" }}>
+    <ScrollView style={{ backgroundColor: "#1C1A2B", paddingTop: 30 }}>
+      <Header hasBackButton={true} />
       <View style={styles.container} testID="ThreadInfoContainer">
         <Text style={styles.title}>{thread.title}</Text>
         <Text style={styles.sectionTitle}>{thread.description}</Text>
