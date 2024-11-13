@@ -10,6 +10,10 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => 1),
 }));
 
+jest.mock("../../src/hook/AuthContext.js", () => ({
+  useAuth: () => ({ id: 1 }),
+}));
+
 jest.mock("@expo/vector-icons/FontAwesome", () => () => <></>);
 
 describe("ForumInfo", () => {

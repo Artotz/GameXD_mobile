@@ -52,7 +52,9 @@ export default function Home() {
       const randomArray = [];
       // console.log("Games", result);
 
-      for (let i = 0; i < 10; i++) {
+      let sizeAux = result.length >= 10 ? 10 : result.length;
+
+      for (let i = 0; i < sizeAux; i++) {
         // With Math.floor(Math.random() * (max - min +1)) + min you have a perfectly even distribution.
         randomArray.push(
           result.splice(Math.floor(Math.random() * result.length), 1)[0]
@@ -75,7 +77,7 @@ export default function Home() {
   }, []);
 
   const renderGameItem = ({ item }) => (
-    <View testID="GameCard" style={{ marginHorizontal: 10 }}>
+    <View testID="FlatListItem" style={{ marginHorizontal: 10 }}>
       <GameCard
         title={item.name}
         src={item.header_image}
@@ -134,6 +136,7 @@ export default function Home() {
               justifyContent: "center",
               backgroundColor: "#1C1A2B",
             }}
+            testID="FailedToFetch"
           >
             <FontAwesome size={28} name="exclamation-triangle" color="white" />
           </View>
@@ -145,6 +148,7 @@ export default function Home() {
               justifyContent: "center",
               backgroundColor: "#1C1A2B",
             }}
+            testID="ActivityIndicator"
           >
             <ActivityIndicator></ActivityIndicator>
           </View>
