@@ -18,6 +18,7 @@ import { supabase } from "../../db/supabase.js"; // Certifique-se de ter a confi
 import logo from "../../../assets/logo.png";
 
 export default function LoginScreen() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,26 +37,24 @@ export default function LoginScreen() {
       email,
       password,
     });
+
     setLoading(false);
 
     if (error) {
-      Alert.alert ("Erro", error.message)
+      Alert.alert("Erro", error.message);
     } else if (data) {
-      const { data: userCheck, error: userError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", email)
-      .single()
-
-      if(userError || !userCheck) {
-        Alert.alert("Erro", "Esta conta foi removida")
-        await supabase.auth.signOut()
-        setShowFooter(true)
-        setTimeout (()=> {
-          setShowFooter(false)
-        }, 3000)
+      // Usando o supabase.auth.admin para verificar o usuário
+      const { data: userCheck, error: userError } = await supabase.auth.admin.getUserByEmail(email);
+  
+      if (userError || !userCheck) {
+        Alert.alert("Erro", "Esta conta foi removida");
+        await supabase.auth.signOut();
+        setShowFooter(true);
+        setTimeout(() => {
+          setShowFooter(false);
+        }, 3000);
       } else {
-        router.replace("/home")
+        router.replace("/home");
       }
     }
   };

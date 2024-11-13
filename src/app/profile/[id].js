@@ -21,7 +21,7 @@ import { useAuth } from "../../hook/AuthContext";
 import Header from "../../components/Header";
 
 export default function ProfileInfo() {
-   const { user } = useAuth();
+  const { user } = useAuth();
 
   const { id } = useLocalSearchParams();
   const [profile, setProfile] = useState({});
@@ -36,6 +36,18 @@ export default function ProfileInfo() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      Alert.alert("Deslogado com sucesso!");
+      router.push("/login"); // Redireciona para a tela de login
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+      Alert.alert("Erro ao deslogar", error.message);
+    }
+  };
   const fetchUser = async () => {
     try {
       const { data, error } = await supabase
@@ -92,7 +104,7 @@ export default function ProfileInfo() {
         .from('profiles') // A tabela que armazena os perfis dos usuários
         .delete()
         .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
-  
+
       if (error) {
         console.error("Erro ao apagar conta:", error);
         Alert.alert("Erro ao apagar conta", error.message);
@@ -251,18 +263,57 @@ export default function ProfileInfo() {
           renderItem={renderReviewItem}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-           style={{ display: "flex", width: "100%", gap: 12 }}
-           contentContainerStyle={{
-             justifyContent: "center",
-             alignItems: "center",
-           }}
+          style={{ display: "flex", width: "100%", gap: 12 }}
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         />
-        { <TouchableOpacity
-           onPress={handleDeleteAccount}
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Deslogar</Text>
+        </TouchableOpacity>
+
+        {<TouchableOpacity
+          onPress={() => setModalVisible(true)}
           style={styles.deleteButton}
         >
           <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-        </TouchableOpacity> }
+        </TouchableOpacity>}
+
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>
+                Você tem certeza que deseja apagar sua conta? Essa ação não pode ser
+                desfeita.
+              </Text>
+
+              <View style={styles.modalButtonsContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleDeleteAccount();
+                    setModalVisible(false);
+                  }}
+                  style={[styles.modalButton, styles.confirmButton]}
+                >
+                  <Text style={styles.modalButtonText}>Sim</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  style={[styles.modalButton, styles.cancelButton]}
+                >
+                  <Text style={styles.modalButtonText}>Não</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -367,12 +418,78 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4d4f",
     borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
     marginTop: 30,
   },
   deleteButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight:"bold",
-  }
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparente
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#372f52", // Fundo do modal
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalText: {
+    fontSize: 18,
+    color: "white", // Cor da fonte
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  modalButtonsContainer: {
+    flexDirection: "row",
+    gap: 20,
+  },
+  modalButton: {
+    width: "90%",
+    height: 40,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000", // Cor da sombra
+    shadowOffset: { width: 0, height: 2 }, // Deslocamento da sombra
+    shadowOpacity: 0.8, // Intensidade da sombra
+    shadowRadius: 4, // Raio da sombra
+    elevation: 5, // Sombra para Android
+  },
+  confirmButton: {
+    backgroundColor: "#6d5ab0", // Cor marrom para o botão "Sim"
+  },
+  cancelButton: {
+    backgroundColor: "#3b2d47", // Cor roxo escuro para o botão "Não"
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  logoutButton: {
+    width: "35%",
+    height: 50,
+    backgroundColor: "#3b2d47", // Cor roxa escura para o botão de logout
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    shadowColor: "#000", // Cor da sombra
+    shadowOffset: { width: 0, height: 2 }, // Deslocamento da sombra
+    shadowOpacity: 0.8, // Intensidade da sombra
+    shadowRadius: 4, // Raio da sombra
+    elevation: 5, // Sombra para Android
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });
