@@ -16,6 +16,7 @@ import {
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ProfilePhotoLink from "../../components/ProfilePhotoLink";
 import { useAuth } from "../../hook/AuthContext";
+import Header from "../../components/Header";
 
 export default function GameInfo() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function GameInfo() {
 
   const [gameInfo, setGameInfo] = useState({});
   const [gameReviews, setGameReviews] = useState([]);
+  const [gameTotalRating, setGameTotalRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [userAlreadyReviewed, setUserAlreadyReviewed] = useState(false);
 
@@ -57,6 +59,15 @@ export default function GameInfo() {
       const result = await response.json();
       console.log("All Reviews", result);
       setGameReviews(result);
+
+      if (result.length > 0) {
+        const totalRating = result.reduce(
+          (sum, review) => sum + review.star_rating,
+          0
+        );
+
+        setGameTotalRating(totalRating / result.length);
+      }
     } catch (error) {
       console.error("Erro ao recuperar dados:", error);
       // setGameReviews([
@@ -321,12 +332,10 @@ export default function GameInfo() {
   }
 
   return (
-    <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
-      {/* Botão de voltar, definir rota ao voltar */}
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <FontAwesome name="arrow-left" size={24} color="#fff" />
-      </TouchableOpacity>
-
+    <ScrollView
+      style={{ height: "full", backgroundColor: "#1C1A2B", paddingTop: 30 }}
+    >
+      <Header hasBackButton={true} />
       <View style={styles.container} testID="GameInfoContainer">
         <Image
           resizeMode="cover"
@@ -360,6 +369,11 @@ export default function GameInfo() {
           />
         </View>
         <Text style={styles.sectionTitle}>{gameInfo.name}</Text>
+        <Text style={styles.totalRatingTitle}>
+          {gameTotalRating.toFixed(2)}
+          {"  "}
+          <FontAwesome size={20} name={"star"} color="#FFD700" />
+        </Text>
         <Text style={styles.gameBrand}>
           {gameInfo.publishers}
           {"\n"}
@@ -544,9 +558,6 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     gap: 8,
   },
-  backButton: {
-    left: 20,
-  },
   title: {
     fontSize: 40,
     fontWeight: "bold",
@@ -556,12 +567,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 1,
     color: "#a4a3aa",
     textAlign: "center",
     marginTop: 20,
+  },
+  totalRatingTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 1,
+    color: "#FFD700",
+    textAlign: "center",
+    // marginTop: 20,
   },
   underline: {
     height: 1,

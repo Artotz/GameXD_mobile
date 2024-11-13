@@ -36,8 +36,6 @@ export default function ProfileInfo() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-
-
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -102,9 +100,9 @@ export default function ProfileInfo() {
   const handleDeleteAccount = async () => {
     try {
       const { error } = await supabase
-        .from('profiles') // A tabela que armazena os perfis dos usuários
+        .from("profiles") // A tabela que armazena os perfis dos usuários
         .delete()
-        .eq('id', user.id); // Deleta o perfil baseado no ID do usuário
+        .eq("id", user.id); // Deleta o perfil baseado no ID do usuário
 
       if (error) {
         console.error("Erro ao apagar conta:", error);
@@ -218,7 +216,7 @@ export default function ProfileInfo() {
   return (
     <ScrollView style={{ height: "full", backgroundColor: "#1C1A2B" }}>
       <View style={styles.container}>
-        <Header />
+        <Header hasBackButton={true} />
 
         <View style={styles.profileInfo}>
           <View style={styles.profileInfoLeft}>
@@ -274,12 +272,14 @@ export default function ProfileInfo() {
           <Text style={styles.logoutButtonText}>Deslogar</Text>
         </TouchableOpacity>
 
-        {<TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          style={styles.deleteButton}
-        >
-          <Text style={styles.deleteButtonText}>Apagar Conta</Text>
-        </TouchableOpacity>}
+        {
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={styles.deleteButton}
+          >
+            <Text style={styles.deleteButtonText}>Apagar Conta</Text>
+          </TouchableOpacity>
+        }
 
         <Modal
           visible={modalVisible}
@@ -290,8 +290,8 @@ export default function ProfileInfo() {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalText}>
-                Você tem certeza que deseja apagar sua conta? Essa ação não pode ser
-                desfeita.
+                Você tem certeza que deseja apagar sua conta? Essa ação não pode
+                ser desfeita.
               </Text>
 
               <View style={styles.modalButtonsContainer}>
@@ -313,7 +313,6 @@ export default function ProfileInfo() {
               </View>
             </View>
           </View>
-
         </Modal>
       </View>
     </ScrollView>
